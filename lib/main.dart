@@ -6,12 +6,17 @@ import 'package:vital_track/firebase_options.dart';
 import 'package:vital_track/core/routers/app_router.dart';
 import 'package:vital_track/core/theme/app_theme.dart';
 import 'package:vital_track/l10n/app_localizations.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'presentation/auth/initialization_provider.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+  
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  
   runApp(
     const ProviderScope(
       child: VitalTrackApp(),
@@ -25,6 +30,13 @@ class VitalTrackApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(appRouterProvider);
+    
+    // Remove the native splash screen when initialization is finished
+    ref.listen(initializationProvider, (previous, next) {
+      if (!next.isLoading) {
+        FlutterNativeSplash.remove();
+      }
+    });
 
     return MaterialApp.router(
       title: 'VitalTrack',

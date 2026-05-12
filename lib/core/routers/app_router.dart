@@ -18,6 +18,7 @@ GoRouter appRouter(Ref ref) {
   
   return GoRouter(
     initialLocation: '/splash',
+    errorBuilder: (context, state) => const SplashScreen(),
     redirect: (context, state) {
       final isSplash = state.matchedLocation == '/splash';
       

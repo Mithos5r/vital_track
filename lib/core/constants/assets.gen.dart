@@ -14,63 +14,10 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart' as _svg;
 import 'package:vector_graphics/vector_graphics.dart' as _vg;
 
-class $AssetsLauncherIconGen {
-  const $AssetsLauncherIconGen();
-
-  /// File path: assets/launcher_icon/config.yaml
-  String get config => 'assets/launcher_icon/config.yaml';
-
-  /// File path: assets/launcher_icon/ic_launcher.png
-  AssetGenImage get icLauncher =>
-      const AssetGenImage('assets/launcher_icon/ic_launcher.png');
-
-  /// File path: assets/launcher_icon/ic_launcher_background.png
-  AssetGenImage get icLauncherBackground =>
-      const AssetGenImage('assets/launcher_icon/ic_launcher_background.png');
-
-  /// File path: assets/launcher_icon/ic_launcher_foreground.png
-  AssetGenImage get icLauncherForeground =>
-      const AssetGenImage('assets/launcher_icon/ic_launcher_foreground.png');
-
-  /// File path: assets/launcher_icon/ic_launcher_monochrome.png
-  AssetGenImage get icLauncherMonochrome =>
-      const AssetGenImage('assets/launcher_icon/ic_launcher_monochrome.png');
-
-  /// File path: assets/launcher_icon/icon.png
-  AssetGenImage get icon =>
-      const AssetGenImage('assets/launcher_icon/icon.png');
-
-  /// List of all assets
-  List<dynamic> get values => [
-    config,
-    icLauncher,
-    icLauncherBackground,
-    icLauncherForeground,
-    icLauncherMonochrome,
-    icon,
-  ];
-}
-
-class $AssetsNativeSplashGen {
-  const $AssetsNativeSplashGen();
-
-  /// File path: assets/native_splash/config.yaml
-  String get config => 'assets/native_splash/config.yaml';
-
-  /// File path: assets/native_splash/splash.png
-  AssetGenImage get splash =>
-      const AssetGenImage('assets/native_splash/splash.png');
-
-  /// List of all assets
-  List<dynamic> get values => [config, splash];
-}
-
 class Assets {
   const Assets._();
 
-  static const $AssetsLauncherIconGen launcherIcon = $AssetsLauncherIconGen();
   static const SvgGenImage logo = SvgGenImage('assets/logo.svg');
-  static const $AssetsNativeSplashGen nativeSplash = $AssetsNativeSplashGen();
   static const AssetGenImage splash = AssetGenImage('assets/splash.gif');
 
   /// List of all assets
