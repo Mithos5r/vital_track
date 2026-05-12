@@ -41,7 +41,7 @@ void main() {
           GlobalWidgetsLocalizations.delegate,
           GlobalCupertinoLocalizations.delegate,
         ],
-        supportedLocales: const [Locale('es')],
+        supportedLocales: [Locale('es')],
         home: HistoryScreen(param: param),
       ),
     );
@@ -49,8 +49,8 @@ void main() {
 
   group('HistoryScreen Tests', () {
     testWidgets('shows empty state when no metrics match the param', (tester) async {
-      when(() => mockHealthRepository.getHealthMetrics('123'))
-          .thenAnswer((_) async => []);
+      when(() => mockHealthRepository.watchHealthMetrics('123'))
+          .thenAnswer((_) => Stream.value([]));
 
       await tester.pumpWidget(createWidgetUnderTest('steps'));
       await tester.pumpAndSettle();
@@ -73,8 +73,8 @@ void main() {
         ),
       ];
 
-      when(() => mockHealthRepository.getHealthMetrics('123'))
-          .thenAnswer((_) async => metrics);
+      when(() => mockHealthRepository.watchHealthMetrics('123'))
+          .thenAnswer((_) => Stream.value(metrics));
 
       await tester.pumpWidget(createWidgetUnderTest('heartRate'));
       await tester.pumpAndSettle();
@@ -95,8 +95,8 @@ void main() {
         ),
       ];
 
-      when(() => mockHealthRepository.getHealthMetrics('123'))
-          .thenAnswer((_) async => metrics);
+      when(() => mockHealthRepository.watchHealthMetrics('123'))
+          .thenAnswer((_) => Stream.value(metrics));
 
       await tester.pumpWidget(createWidgetUnderTest('exercise'));
       await tester.pumpAndSettle();

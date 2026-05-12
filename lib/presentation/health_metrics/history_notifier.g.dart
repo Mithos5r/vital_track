@@ -13,7 +13,7 @@ part of 'history_notifier.dart';
 final historyProvider = HistoryNotifierFamily._();
 
 final class HistoryNotifierProvider
-    extends $AsyncNotifierProvider<HistoryNotifier, List<HealthMetricEntity>> {
+    extends $StreamNotifierProvider<HistoryNotifier, List<HealthMetricEntity>> {
   HistoryNotifierProvider._({
     required HistoryNotifierFamily super.from,
     required String super.argument,
@@ -50,7 +50,7 @@ final class HistoryNotifierProvider
   }
 }
 
-String _$historyNotifierHash() => r'8498f4ac76104078a7b60d5a86ee1b47e8463eb6';
+String _$historyNotifierHash() => r'd6b5859d61a61ff4182686db3c74f7aba40e508b';
 
 final class HistoryNotifierFamily extends $Family
     with
@@ -58,7 +58,7 @@ final class HistoryNotifierFamily extends $Family
           HistoryNotifier,
           AsyncValue<List<HealthMetricEntity>>,
           List<HealthMetricEntity>,
-          FutureOr<List<HealthMetricEntity>>,
+          Stream<List<HealthMetricEntity>>,
           String
         > {
   HistoryNotifierFamily._()
@@ -78,11 +78,11 @@ final class HistoryNotifierFamily extends $Family
 }
 
 abstract class _$HistoryNotifier
-    extends $AsyncNotifier<List<HealthMetricEntity>> {
+    extends $StreamNotifier<List<HealthMetricEntity>> {
   late final _$args = ref.$arg as String;
   String get param => _$args;
 
-  FutureOr<List<HealthMetricEntity>> build(String param);
+  Stream<List<HealthMetricEntity>> build(String param);
   @$mustCallSuper
   @override
   void runBuild() {

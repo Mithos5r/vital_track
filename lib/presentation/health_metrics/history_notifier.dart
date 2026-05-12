@@ -8,31 +8,26 @@ part 'history_notifier.g.dart';
 @riverpod
 class HistoryNotifier extends _$HistoryNotifier {
   @override
-  FutureOr<List<HealthMetricEntity>> build(String param) async {
+  Stream<List<HealthMetricEntity>> build(String param) {
     final user = ref.watch(authRepositoryProvider).currentUser;
-    if (user == null) return [];
+    if (user == null) return Stream.value([]);
 
-    final allMetrics = await ref.watch(healthRepositoryProvider).getHealthMetrics(user.uid);
-    
-    // Filter metrics that have data for the specific parameter
-    return allMetrics.where((m) {
-      return switch (param) {
-        'heartRate' => m.heartRate != null,
-        'bloodOxygen' => m.bloodOxygen != null,
-        'steps' => m.steps != null,
-        'calories' => m.caloriesBurned != null,
-        'exercise' => m.exerciseDuration != null || m.exerciseType != null,
-        _ => false,
-      };
-    }).toList();
+    return ref.watch(healthRepositoryProvider).watchHealthMetrics(user.uid).map((allMetrics) {
+      // Filter metrics that have data for the specific parameter
+      return allMetrics.where((m) {
+        return switch (param) {
+          'heartRate' => m.heartRate != null,
+          'bloodOxygen' => m.bloodOxygen != null,
+          'steps' => m.steps != null,
+          'calories' => m.caloriesBurned != null,
+          'exercise' => m.exerciseDuration != null || m.exerciseType != null,
+          _ => false,
+        };
+      }).toList();
+    });
   }
 
   Future<void> deleteMetric(int id) async {
-    state = const AsyncLoading();
-    state = await AsyncValue.guard(() async {
-      await ref.read(deleteMetricUseCaseProvider).execute(id);
-      // Refresh by re-running build
-      return build(param);
-    });
+    await ref.read(clearMetricPropertyUseCaseProvider).execute(id, param);
   }
 }

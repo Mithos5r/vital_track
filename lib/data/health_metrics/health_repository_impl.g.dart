@@ -103,6 +103,55 @@ final class HealthRepositoryProvider
 
 String _$healthRepositoryHash() => r'e971e6c13df903fdb1d125b381226bc264eca43b';
 
+@ProviderFor(clearMetricPropertyUseCase)
+final clearMetricPropertyUseCaseProvider =
+    ClearMetricPropertyUseCaseProvider._();
+
+final class ClearMetricPropertyUseCaseProvider
+    extends
+        $FunctionalProvider<
+          ClearMetricPropertyUseCase,
+          ClearMetricPropertyUseCase,
+          ClearMetricPropertyUseCase
+        >
+    with $Provider<ClearMetricPropertyUseCase> {
+  ClearMetricPropertyUseCaseProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'clearMetricPropertyUseCaseProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$clearMetricPropertyUseCaseHash();
+
+  @$internal
+  @override
+  $ProviderElement<ClearMetricPropertyUseCase> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  ClearMetricPropertyUseCase create(Ref ref) {
+    return clearMetricPropertyUseCase(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(ClearMetricPropertyUseCase value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<ClearMetricPropertyUseCase>(value),
+    );
+  }
+}
+
+String _$clearMetricPropertyUseCaseHash() =>
+    r'6841faabd8cc8e00af49685fb399b2ef038cd67d';
+
 @ProviderFor(deleteMetricUseCase)
 final deleteMetricUseCaseProvider = DeleteMetricUseCaseProvider._();
 
