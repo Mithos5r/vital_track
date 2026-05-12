@@ -72,9 +72,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   keyboardType: TextInputType.emailAddress,
                   textInputAction: TextInputAction.next,
                   validator: (value) {
-                    if (value == null || value.isEmpty) return 'Campo requerido';
+                    if (value == null || value.isEmpty) return l10n.fieldRequired;
                     final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-                    if (!emailRegex.hasMatch(value)) return 'Email inválido';
+                    if (!emailRegex.hasMatch(value)) return l10n.invalidEmail;
                     return null;
                   },
                 ),
@@ -90,7 +90,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   textInputAction: TextInputAction.done,
                   onFieldSubmitted: (_) => _submit(),
                   validator: (value) {
-                    if (value == null || value.isEmpty) return 'Campo requerido';
+                    if (value == null || value.isEmpty) return l10n.fieldRequired;
                     return null;
                   },
                 ),

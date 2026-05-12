@@ -25,5 +25,13 @@
   "bloodOxygen": "Oxígeno en sangre",
   "steps": "Pasos",
   "calories": "Calorías",
-  "exercise": "Ejercicio"
+  "exercise": "Ejercicio",
+  "fieldRequired": "Campo requerido",
+  "invalidEmail": "Email inválido",
+  "passwordTooShort": "Mínimo 6 caracteres",
+  "passwordRequiresUppercase": "Requiere una mayúscula",
+  "passwordRequiresLowercase": "Requiere una minúscula",
+  "passwordRequiresNumber": "Requiere un número",
+  "passwordRequiresSpecialChar": "Requiere un carácter especial",
+  "passwordsDoNotMatch": "Las contraseñas no coinciden"
 }

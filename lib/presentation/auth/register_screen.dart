@@ -26,19 +26,19 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     super.dispose();
   }
 
-  String? _validatePassword(String? value) {
-    if (value == null || value.isEmpty) return 'Campo requerido';
-    if (value.length < 6) return 'Mínimo 6 caracteres';
+  String? _validatePassword(String? value, AppLocalizations l10n) {
+    if (value == null || value.isEmpty) return l10n.fieldRequired;
+    if (value.length < 6) return l10n.passwordTooShort;
     
     final hasUppercase = value.contains(RegExp(r'[A-Z]'));
     final hasLowercase = value.contains(RegExp(r'[a-z]'));
     final hasDigits = value.contains(RegExp(r'[0-9]'));
     final hasSpecialCharacters = value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'));
 
-    if (!hasUppercase) return 'Requiere una mayúscula';
-    if (!hasLowercase) return 'Requiere una minúscula';
-    if (!hasDigits) return 'Requiere un número';
-    if (!hasSpecialCharacters) return 'Requiere un carácter especial';
+    if (!hasUppercase) return l10n.passwordRequiresUppercase;
+    if (!hasLowercase) return l10n.passwordRequiresLowercase;
+    if (!hasDigits) return l10n.passwordRequiresNumber;
+    if (!hasSpecialCharacters) return l10n.passwordRequiresSpecialChar;
     
     return null;
   }
@@ -99,9 +99,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   keyboardType: TextInputType.emailAddress,
                   textInputAction: TextInputAction.next,
                   validator: (value) {
-                    if (value == null || value.isEmpty) return 'Campo requerido';
+                    if (value == null || value.isEmpty) return l10n.fieldRequired;
                     final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-                    if (!emailRegex.hasMatch(value)) return 'Email inválido';
+                    if (!emailRegex.hasMatch(value)) return l10n.invalidEmail;
                     return null;
                   },
                 ),
@@ -115,7 +115,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   ),
                   obscureText: true,
                   textInputAction: TextInputAction.next,
-                  validator: _validatePassword,
+                  validator: (v) => _validatePassword(v, l10n),
                 ),
                 const SizedBox(height: 16),
                 // Confirm Password Field
@@ -129,8 +129,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   textInputAction: TextInputAction.done,
                   onFieldSubmitted: (_) => _submit(),
                   validator: (value) {
-                    if (value == null || value.isEmpty) return 'Campo requerido';
-                    if (value != _passwordController.text) return 'Las contraseñas no coinciden';
+                    if (value == null || value.isEmpty) return l10n.fieldRequired;
+                    if (value != _passwordController.text) return l10n.passwordsDoNotMatch;
                     return null;
                   },
                 ),

@@ -66,4 +66,28 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get exercise => 'Ejercicio';
+
+  @override
+  String get fieldRequired => 'Campo requerido';
+
+  @override
+  String get invalidEmail => 'Email inválido';
+
+  @override
+  String get passwordTooShort => 'Mínimo 6 caracteres';
+
+  @override
+  String get passwordRequiresUppercase => 'Requiere una mayúscula';
+
+  @override
+  String get passwordRequiresLowercase => 'Requiere una minúscula';
+
+  @override
+  String get passwordRequiresNumber => 'Requiere un número';
+
+  @override
+  String get passwordRequiresSpecialChar => 'Requiere un carácter especial';
+
+  @override
+  String get passwordsDoNotMatch => 'Las contraseñas no coinciden';
 }
