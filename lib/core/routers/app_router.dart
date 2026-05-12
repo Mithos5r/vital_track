@@ -4,6 +4,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../data/firebase_auth/auth_repository_impl.dart';
 import '../../../presentation/auth/login_screen.dart';
 import '../../../presentation/auth/register_screen.dart';
+import '../../../presentation/dashboard/dashboard_screen.dart';
 
 part 'app_router.g.dart';
 
@@ -43,8 +44,12 @@ GoRouter appRouter(Ref ref) {
       ),
       GoRoute(
         path: '/home',
+        builder: (context, state) => const DashboardScreen(),
+      ),
+      GoRoute(
+        path: '/add-entry',
         builder: (context, state) => const Scaffold(
-          body: Center(child: Text('Home Screen')),
+          body: Center(child: Text('Add Entry Screen')),
         ),
       ),
     ],
