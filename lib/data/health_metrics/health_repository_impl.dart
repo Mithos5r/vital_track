@@ -1,5 +1,4 @@
 import 'package:drift/drift.dart';
-import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'app_database.dart';
 import 'health_local_data_source.dart';

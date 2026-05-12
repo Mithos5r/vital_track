@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../data/firebase_auth/auth_repository_impl.dart';
 
@@ -28,9 +27,9 @@ GoRouter appRouter(Ref ref) {
   
   return GoRouter(
     initialLocation: '/splash',
-    refreshListenable: RouterListenable(ref.watch(authStateChangesProvider.stream)),
+    refreshListenable: RouterListenable(ref.watch(authStateChangesProvider.future).asStream()),
     redirect: (context, state) {
-      final isLoggedIn = authState.valueOrNull != null;
+      final isLoggedIn = authState.value != null;
       final isLoggingIn = state.matchedLocation == '/login' || 
                           state.matchedLocation == '/register' ||
                           state.matchedLocation == '/splash';

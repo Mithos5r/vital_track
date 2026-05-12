@@ -16,7 +16,7 @@ class AppTheme {
       scaffoldBackgroundColor: VitalTrackColors.background,
       
       // Card Theme: elevation 0 and Outline border
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
@@ -27,7 +27,7 @@ class AppTheme {
       // TextFormField Theme: OutlineInputBorder and filled
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: colorScheme.surfaceContainerHighest.withOpacity(0.3),
+        fillColor: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
         border: const OutlineInputBorder(),
         enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(color: colorScheme.outline),

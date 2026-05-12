@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'vital_track_colors.dart';
+import '../vital_track_colors.dart';
 
 class VitalTrackSnackBars {
   VitalTrackSnackBars._();

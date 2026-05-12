@@ -1,6 +1,5 @@
 import 'package:drift/drift.dart';
 import 'app_database.dart';
-import '../../domain/health_metrics/health_metric_entity.dart';
 
 class HealthLocalDataSource {
   final AppDatabase _db;
