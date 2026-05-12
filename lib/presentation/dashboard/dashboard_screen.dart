@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import '../../data/firebase_auth/auth_repository_impl.dart';
-import '../../domain/health_metrics/health_metric_entity.dart';
+import '../../domain/health_metrics/dashboard_summary.dart';
 import '../../l10n/app_localizations.dart';
 import 'dashboard_notifier.dart';
 
@@ -60,27 +60,109 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> with SingleTi
       appBar: AppBar(
         title: Text(l10n.homeTitle, style: Theme.of(context).textTheme.headlineSmall),
         centerTitle: false,
+        actions: [
+          IconButton(
+            key: const Key('add-entry-button'),
+            icon: const Icon(Icons.add),
+            tooltip: l10n.save, // Or use a new 'add' string
+            onPressed: () => context.push('/add-entry'),
+          ),
+        ],
       ),
       body: metricsAsync.when(
         data: (metrics) {
           if (metrics.isEmpty) {
             return _EmptyDashboard(l10n: l10n);
           }
-          return _DashboardContent(metrics: metrics, l10n: l10n);
+
+          final summary = DashboardSummary.fromHistory(metrics);
+
+          return CustomScrollView(
+            slivers: [
+              SliverPadding(
+                padding: const EdgeInsets.all(16.0),
+                sliver: SliverGrid.count(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 16,
+                  mainAxisSpacing: 16,
+                  children: [
+                    _BentoTile(
+                      title: l10n.heartRate,
+                      value: summary.heartRate?.toString() ?? '--',
+                      unit: 'bpm',
+                      icon: Icons.favorite,
+                      color: Colors.red.shade50,
+                      iconColor: Colors.red,
+                    ),
+                    _BentoTile(
+                      title: l10n.steps,
+                      value: summary.steps?.toString() ?? '--',
+                      unit: '',
+                      icon: Icons.directions_walk,
+                      color: Colors.blue.shade50,
+                      iconColor: Colors.blue,
+                    ),
+                    _BentoTile(
+                      title: l10n.calories,
+                      value: summary.caloriesBurned?.toString() ?? '--',
+                      unit: 'kcal',
+                      icon: Icons.local_fire_department,
+                      color: Colors.orange.shade50,
+                      iconColor: Colors.orange,
+                    ),
+                    _BentoTile(
+                      title: l10n.bloodOxygen,
+                      value: summary.bloodOxygen != null ? '${summary.bloodOxygen}%' : '--',
+                      unit: '',
+                      icon: Icons.opacity,
+                      color: Colors.teal.shade50,
+                      iconColor: Colors.teal,
+                    ),
+                  ],
+                ),
+              ),
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                sliver: SliverToBoxAdapter(
+                  child: _BentoTile(
+                    title: l10n.exercise,
+                    value: summary.exerciseDuration != null ? '${summary.exerciseDuration} min' : '--',
+                    unit: summary.exerciseType ?? '',
+                    icon: Icons.fitness_center,
+                    color: Colors.purple.shade50,
+                    iconColor: Colors.purple,
+                    isFullWidth: true,
+                  ),
+                ),
+              ),
+              const SliverToBoxAdapter(child: SizedBox(height: 100)), // Space for FAB
+            ],
+          );
         },
         loading: () => Skeletonizer(
           enabled: true,
-          child: _DashboardContent(
-            metrics: [
-              HealthMetricEntity(
-                user: '',
-                timestamp: DateTime.now(),
-                heartRate: 80,
-                steps: 5000,
-                caloriesBurned: 300,
-              )
+          child: CustomScrollView(
+            slivers: [
+              SliverPadding(
+                padding: const EdgeInsets.all(16.0),
+                sliver: SliverGrid.count(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 16,
+                  mainAxisSpacing: 16,
+                  children: List.generate(
+                    4,
+                    (index) => _BentoTile(
+                      title: 'Loading',
+                      value: '00',
+                      unit: 'unit',
+                      icon: Icons.favorite,
+                      color: Colors.grey.shade50,
+                      iconColor: Colors.grey,
+                    ),
+                  ),
+                ),
+              ),
             ],
-            l10n: l10n,
           ),
         ),
         error: (err, stack) => Center(child: Text(err.toString())),
@@ -96,62 +178,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> with SingleTi
   }
 }
 
-class _DashboardContent extends StatelessWidget {
-  final List<HealthMetricEntity> metrics;
-  final AppLocalizations l10n;
-
-  const _DashboardContent({required this.metrics, required this.l10n});
-
-  @override
-  Widget build(BuildContext context) {
-    // Basic calculation for the latest metrics summary
-    final latest = metrics.first;
-
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: GridView.count(
-        crossAxisCount: 2,
-        crossAxisSpacing: 16,
-        mainAxisSpacing: 16,
-        children: [
-          _BentoTile(
-            title: l10n.heartRate,
-            value: latest.heartRate?.toString() ?? '--',
-            unit: 'bpm',
-            icon: Icons.favorite,
-            color: Colors.red.shade50,
-            iconColor: Colors.red,
-          ),
-          _BentoTile(
-            title: l10n.steps,
-            value: latest.steps?.toString() ?? '--',
-            unit: '',
-            icon: Icons.directions_walk,
-            color: Colors.blue.shade50,
-            iconColor: Colors.blue,
-          ),
-          _BentoTile(
-            title: l10n.calories,
-            value: latest.caloriesBurned?.toString() ?? '--',
-            unit: 'kcal',
-            icon: Icons.local_fire_department,
-            color: Colors.orange.shade50,
-            iconColor: Colors.orange,
-          ),
-          _BentoTile(
-            title: l10n.bloodOxygen,
-            value: latest.bloodOxygen != null ? '${latest.bloodOxygen}%' : '--',
-            unit: '',
-            icon: Icons.opacity,
-            color: Colors.teal.shade50,
-            iconColor: Colors.teal,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 class _BentoTile extends StatelessWidget {
   final String title;
   final String value;
@@ -159,6 +185,7 @@ class _BentoTile extends StatelessWidget {
   final IconData icon;
   final Color color;
   final Color iconColor;
+  final bool isFullWidth;
 
   const _BentoTile({
     required this.title,
@@ -167,6 +194,7 @@ class _BentoTile extends StatelessWidget {
     required this.icon,
     required this.color,
     required this.iconColor,
+    this.isFullWidth = false,
   });
 
   @override
@@ -183,18 +211,34 @@ class _BentoTile extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Icon(icon, color: iconColor),
-                Text(unit, style: TextStyle(color: iconColor.withValues(alpha: 0.7), fontSize: 12)),
+                if (!isFullWidth)
+                  Text(unit, style: TextStyle(color: iconColor.withValues(alpha: 0.7), fontSize: 12)),
               ],
             ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  value,
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: iconColor.withValues(alpha: 0.9),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.baseline,
+                  textBaseline: TextBaseline.alphabetic,
+                  children: [
+                    Text(
+                      value,
+                      style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: iconColor.withValues(alpha: 0.9),
+                          ),
+                    ),
+                    if (isFullWidth) ...[
+                      const SizedBox(width: 8),
+                      Text(
+                        unit,
+                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                              color: iconColor.withValues(alpha: 0.7),
+                            ),
                       ),
+                    ],
+                  ],
                 ),
                 Text(
                   title,
