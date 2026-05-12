@@ -1,6 +1,7 @@
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../data/firebase_auth/auth_repository_impl.dart';
+import '../../../presentation/auth/initialization_provider.dart';
 import '../../../presentation/auth/login_screen.dart';
 import '../../../presentation/auth/register_screen.dart';
 import '../../../presentation/auth/splash_screen.dart';
@@ -13,27 +14,28 @@ part 'app_router.g.dart';
 @riverpod
 GoRouter appRouter(Ref ref) {
   final authState = ref.watch(authStateChangesProvider);
+  final initStatus = ref.watch(initializationProvider);
   
   return GoRouter(
     initialLocation: '/splash',
     redirect: (context, state) {
+      final isSplash = state.matchedLocation == '/splash';
+      
+      // While initialization (timer + auth check) is in progress, stay on splash
+      if (initStatus.isLoading || authState.isLoading) {
+        return '/splash';
+      }
+
       final user = authState.value;
-      final isLoading = authState.isLoading;
-
-      // While initial auth state is loading, stay on splash
-      if (isLoading) return '/splash';
-
       final isLoggedIn = user != null;
       final isAuthPath = state.matchedLocation == '/login' || state.matchedLocation == '/register';
-      final isSplash = state.matchedLocation == '/splash';
 
       if (!isLoggedIn) {
-        // If not logged in, and not already on an auth screen, go to login
         if (!isAuthPath) return '/login';
         return null;
       }
 
-      // If logged in
+      // If logged in and on splash or auth path, go to home
       if (isAuthPath || isSplash) {
         return '/home';
       }
