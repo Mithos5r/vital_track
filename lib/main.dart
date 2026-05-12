@@ -12,23 +12,44 @@ import 'data/health_metrics/shared_prefs_data_source.dart';
 import 'data/health_metrics/workmanager_sync_service.dart';
 
 void main() async {
-  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-  
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
 
-  // Use a temporary container to initialize background sync
-  final container = ProviderContainer();
-  await container.read(backgroundSyncServiceProvider).initialize();
-  
-  runApp(
-    UncontrolledProviderScope(
-      container: container,
-      child: const VitalTrackApp(),
-    ),
-  );
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+
+    final container = ProviderContainer();
+    
+    // Initialize background services without blocking app launch on minor failures
+    await _initializeServices(container);
+
+    runApp(
+      UncontrolledProviderScope(
+        container: container,
+        child: const VitalTrackApp(),
+      ),
+    );
+  } catch (e) {
+    debugPrint('Fatal initialization error: $e');
+    // Fallback to basic error view if everything fails
+    runApp(
+      const ProviderScope(
+        child: MaterialApp(
+          home: Scaffold(body: Center(child: Text('Error initializing app'))),
+        ),
+      ),
+    );
+  }
+}
+
+Future<void> _initializeServices(ProviderContainer container) async {
+  try {
+    await container.read(backgroundSyncServiceProvider).initialize();
+  } catch (e) {
+    debugPrint('BackgroundSync initialization failed: $e');
+  }
 }
 
 class VitalTrackApp extends ConsumerWidget {
@@ -38,18 +59,8 @@ class VitalTrackApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(appRouterProvider);
     
-    // Reset stop flag on app start as per context.md
-    ref.listen(sharedPrefsDataSourceProvider, (previous, next) {
-      if (next.hasValue) {
-        next.value!.setSyncStopped(false);
-      }
-    });
-
-    ref.listen(initializationProvider, (previous, next) {
-      if (!next.isLoading) {
-        FlutterNativeSplash.remove();
-      }
-    });
+    // Efficiently handle one-time startup actions
+    _handleAppStartup(ref);
 
     return MaterialApp.router(
       title: 'VitalTrack',
@@ -66,5 +77,21 @@ class VitalTrackApp extends ConsumerWidget {
       ],
       debugShowCheckedModeBanner: false,
     );
+  }
+
+  void _handleAppStartup(WidgetRef ref) {
+    // Reset stop flag on app start as per context.md
+    ref.listen(sharedPrefsDataSourceProvider, (previous, next) {
+      if (next.hasValue) {
+        next.value!.setSyncStopped(false);
+      }
+    });
+
+    // Handle splash removal
+    ref.listen(initializationProvider, (previous, next) {
+      if (!next.isLoading) {
+        FlutterNativeSplash.remove();
+      }
+    });
   }
 }
