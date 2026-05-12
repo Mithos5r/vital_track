@@ -55,6 +55,7 @@ void main() {
 
       expect(find.text('No esperes más. Pulsa + para añadir datos'), findsOneWidget);
       expect(find.byIcon(Icons.analytics_outlined), findsOneWidget);
+      expect(find.byIcon(Icons.add), findsNWidgets(2)); // AppBar + FAB (collapsed)
     });
 
     testWidgets('shows metrics in Bento Box when data is available', (tester) async {
@@ -96,7 +97,7 @@ void main() {
       await tester.tap(mainFab);
       await tester.pumpAndSettle();
 
-      expect(find.byIcon(Icons.add), findsOneWidget);
+      expect(find.byIcon(Icons.add), findsNWidgets(2)); // AppBar + FAB (expanded)
       expect(find.byIcon(Icons.logout), findsOneWidget);
     });
   });

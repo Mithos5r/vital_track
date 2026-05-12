@@ -60,6 +60,12 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> with SingleTi
       appBar: AppBar(
         title: Text(l10n.homeTitle, style: Theme.of(context).textTheme.headlineSmall),
         centerTitle: false,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.add),
+            onPressed: () => context.push('/add-entry'),
+          ),
+        ],
       ),
       body: metricsAsync.when(
         data: (metrics) {
