@@ -102,4 +102,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get invalidNumber => 'Número inválido';
+
+  @override
+  String get recordDeleted => 'Registro eliminado';
 }

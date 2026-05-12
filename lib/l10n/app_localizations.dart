@@ -279,6 +279,12 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Número inválido'**
   String get invalidNumber;
+
+  /// No description provided for @recordDeleted.
+  ///
+  /// In es, this message translates to:
+  /// **'Registro eliminado'**
+  String get recordDeleted;
 }
 
 class _AppLocalizationsDelegate

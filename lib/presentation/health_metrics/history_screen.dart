@@ -9,22 +9,17 @@ import 'history_notifier.dart';
 class HistoryScreen extends ConsumerWidget {
   final String param;
 
-  const HistoryScreen({
-    super.key,
-    required this.param,
-  });
+  const HistoryScreen({super.key, required this.param});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final historyAsync = ref.watch(historyProvider(param));
-    
+
     final info = HealthMetricInfo.fromId(param);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(info.getTitle(l10n)),
-      ),
+      appBar: AppBar(title: Text(info.getTitle(l10n))),
       body: historyAsync.when(
         data: (metrics) {
           if (metrics.isEmpty) {
@@ -33,13 +28,39 @@ class HistoryScreen extends ConsumerWidget {
           return ListView.separated(
             padding: const EdgeInsets.all(16),
             itemCount: metrics.length,
-            separatorBuilder: (context, index) => const SizedBox(height: 12),
+            separatorBuilder: (context, index) => ColoredBox(
+              color: Colors.black,
+              child: const SizedBox(height: 24),
+            ),
             itemBuilder: (context, index) {
               final metric = metrics[index];
-              return _HistoryItem(
-                metric: metric,
-                info: info,
-                l10n: l10n,
+              return Dismissible(
+                key: Key('metric_${metric.id}'),
+                direction: DismissDirection.endToStart,
+                background: Container(
+                  alignment: Alignment.centerRight,
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  margin: const EdgeInsets.symmetric(vertical: 2),
+                  decoration: BoxDecoration(
+                    color: Colors.red,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: const Icon(Icons.delete, color: Colors.white),
+                ),
+                onDismissed: (direction) {
+                  if (metric.id != null) {
+                    ref
+                        .read(historyProvider(param).notifier)
+                        .deleteMetric(metric.id!);
+                    ScaffoldMessenger.of(
+                      context,
+                    ).showSnackBar(SnackBar(content: Text(l10n.recordDeleted)));
+                  }
+                },
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: _HistoryItem(metric: metric, info: info, l10n: l10n),
+                ),
               );
             },
           );
@@ -65,15 +86,23 @@ class _HistoryItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final dateFormat = DateFormat('dd/MM/yyyy HH:mm');
-    
-    return Card(
-      child: ListTile(
-        title: _buildValueText(context),
-        subtitle: Text(
-          dateFormat.format(metric.timestamp),
-          style: Theme.of(context).textTheme.bodySmall,
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardColor,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(12),
+        child: ListTile(
+          title: _buildValueText(context),
+          subtitle: Text(
+            dateFormat.format(metric.timestamp),
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+          trailing: Icon(info.icon, color: info.iconColor),
         ),
-        trailing: Icon(info.icon, color: info.iconColor),
       ),
     );
   }
@@ -103,10 +132,7 @@ class _HistoryItem extends StatelessWidget {
       _ => '--',
     };
 
-    return Text(
-      value,
-      style: const TextStyle(fontWeight: FontWeight.bold),
-    );
+    return Text(value, style: const TextStyle(fontWeight: FontWeight.bold));
   }
 }
 
@@ -114,10 +140,7 @@ class _EmptyHistory extends StatelessWidget {
   final AppLocalizations l10n;
   final String paramName;
 
-  const _EmptyHistory({
-    required this.l10n,
-    required this.paramName,
-  });
+  const _EmptyHistory({required this.l10n, required this.paramName});
 
   @override
   Widget build(BuildContext context) {
@@ -132,7 +155,9 @@ class _EmptyHistory extends StatelessWidget {
             Text(
               l10n.noDataHistory(paramName),
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Colors.grey),
+              style: Theme.of(
+                context,
+              ).textTheme.bodyLarge?.copyWith(color: Colors.grey),
             ),
           ],
         ),

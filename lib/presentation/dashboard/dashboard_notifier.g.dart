@@ -14,7 +14,7 @@ final dashboardProvider = DashboardNotifierProvider._();
 
 final class DashboardNotifierProvider
     extends
-        $AsyncNotifierProvider<DashboardNotifier, List<HealthMetricEntity>> {
+        $StreamNotifierProvider<DashboardNotifier, List<HealthMetricEntity>> {
   DashboardNotifierProvider._()
     : super(
         from: null,
@@ -34,11 +34,11 @@ final class DashboardNotifierProvider
   DashboardNotifier create() => DashboardNotifier();
 }
 
-String _$dashboardNotifierHash() => r'438367cec622010fe4f4be5ce0a604cc36132d07';
+String _$dashboardNotifierHash() => r'adeb5ad014ccee0d8a38929c9cf73c5fe5319fc3';
 
 abstract class _$DashboardNotifier
-    extends $AsyncNotifier<List<HealthMetricEntity>> {
-  FutureOr<List<HealthMetricEntity>> build();
+    extends $StreamNotifier<List<HealthMetricEntity>> {
+  Stream<List<HealthMetricEntity>> build();
   @$mustCallSuper
   @override
   void runBuild() {
