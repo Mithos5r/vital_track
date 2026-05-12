@@ -71,9 +71,10 @@ class Assets {
   static const $AssetsLauncherIconGen launcherIcon = $AssetsLauncherIconGen();
   static const SvgGenImage logo = SvgGenImage('assets/logo.svg');
   static const $AssetsNativeSplashGen nativeSplash = $AssetsNativeSplashGen();
+  static const AssetGenImage splash = AssetGenImage('assets/splash.gif');
 
   /// List of all assets
-  static List<SvgGenImage> get values => [logo];
+  static List<dynamic> get values => [logo, splash];
 }
 
 class AssetGenImage {

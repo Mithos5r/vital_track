@@ -16,10 +16,10 @@ class SplashScreen extends ConsumerWidget {
       body: Stack(
         children: [
           Center(
-            // Use splash.png as fallback if .gif is not handled by flutter_gen as animation
-            child: Assets.nativeSplash.splash.image(
-              height: 200,
-              width: 200,
+            child: Assets.splash.image(
+              height: 250,
+              width: 250,
+              fit: BoxFit.contain,
             ),
           ),
           Align(
