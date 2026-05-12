@@ -36,10 +36,31 @@ class HistoryScreen extends ConsumerWidget {
             separatorBuilder: (context, index) => const SizedBox(height: 12),
             itemBuilder: (context, index) {
               final metric = metrics[index];
-              return _HistoryItem(
-                metric: metric,
-                info: info,
-                l10n: l10n,
+              return Dismissible(
+                key: Key('metric_${metric.id}'),
+                direction: DismissDirection.endToStart,
+                background: Container(
+                  alignment: Alignment.centerRight,
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  decoration: BoxDecoration(
+                    color: Colors.red,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: const Icon(Icons.delete, color: Colors.white),
+                ),
+                onDismissed: (direction) {
+                  if (metric.id != null) {
+                    ref.read(historyProvider(param).notifier).deleteMetric(metric.id!);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(l10n.recordDeleted)),
+                    );
+                  }
+                },
+                child: _HistoryItem(
+                  metric: metric,
+                  info: info,
+                  l10n: l10n,
+                ),
               );
             },
           );

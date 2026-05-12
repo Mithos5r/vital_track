@@ -50,7 +50,7 @@ final class HistoryNotifierProvider
   }
 }
 
-String _$historyNotifierHash() => r'207d1e2ca3e1717a79c2659c9c4dc6cb688b75d1';
+String _$historyNotifierHash() => r'8498f4ac76104078a7b60d5a86ee1b47e8463eb6';
 
 final class HistoryNotifierFamily extends $Family
     with

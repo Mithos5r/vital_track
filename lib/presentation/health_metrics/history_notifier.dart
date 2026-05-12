@@ -26,4 +26,13 @@ class HistoryNotifier extends _$HistoryNotifier {
       };
     }).toList();
   }
+
+  Future<void> deleteMetric(int id) async {
+    state = const AsyncLoading();
+    state = await AsyncValue.guard(() async {
+      await ref.read(deleteMetricUseCaseProvider).execute(id);
+      // Refresh by re-running build
+      return build(param);
+    });
+  }
 }

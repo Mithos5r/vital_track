@@ -4,6 +4,7 @@ import 'app_database.dart';
 import 'health_local_data_source.dart';
 import '../../domain/health_metrics/health_metric_entity.dart';
 import '../../domain/health_metrics/health_repository.dart';
+import '../../domain/health_metrics/delete_metric_use_case.dart';
 
 part 'health_repository_impl.g.dart';
 
@@ -42,6 +43,11 @@ class HealthRepositoryImpl implements HealthRepository {
     );
     await _dataSource.insertMetric(companion);
   }
+
+  @override
+  Future<void> deleteHealthMetric(int id) async {
+    await _dataSource.deleteMetric(id);
+  }
 }
 
 @riverpod
@@ -52,4 +58,9 @@ HealthLocalDataSource healthLocalDataSource(Ref ref) {
 @riverpod
 HealthRepository healthRepository(Ref ref) {
   return HealthRepositoryImpl(ref.watch(healthLocalDataSourceProvider));
+}
+
+@riverpod
+DeleteMetricUseCase deleteMetricUseCase(Ref ref) {
+  return DeleteMetricUseCase(ref.watch(healthRepositoryProvider));
 }

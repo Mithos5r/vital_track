@@ -102,3 +102,51 @@ final class HealthRepositoryProvider
 }
 
 String _$healthRepositoryHash() => r'e971e6c13df903fdb1d125b381226bc264eca43b';
+
+@ProviderFor(deleteMetricUseCase)
+final deleteMetricUseCaseProvider = DeleteMetricUseCaseProvider._();
+
+final class DeleteMetricUseCaseProvider
+    extends
+        $FunctionalProvider<
+          DeleteMetricUseCase,
+          DeleteMetricUseCase,
+          DeleteMetricUseCase
+        >
+    with $Provider<DeleteMetricUseCase> {
+  DeleteMetricUseCaseProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'deleteMetricUseCaseProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$deleteMetricUseCaseHash();
+
+  @$internal
+  @override
+  $ProviderElement<DeleteMetricUseCase> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  DeleteMetricUseCase create(Ref ref) {
+    return deleteMetricUseCase(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(DeleteMetricUseCase value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<DeleteMetricUseCase>(value),
+    );
+  }
+}
+
+String _$deleteMetricUseCaseHash() =>
+    r'3f9a2978555bfa676be91a48b0c838f89d29b512';
