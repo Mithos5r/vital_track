@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:skeletonizer/skeletonizer.dart';
+import '../../core/constants/health_metrics_info.dart';
 import '../../data/firebase_auth/auth_repository_impl.dart';
 import '../../domain/health_metrics/dashboard_summary.dart';
 import '../../l10n/app_localizations.dart';
@@ -64,7 +65,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> with SingleTi
           IconButton(
             key: const Key('add-entry-button'),
             icon: const Icon(Icons.add),
-            tooltip: l10n.save, // Or use a new 'add' string
+            tooltip: l10n.save,
             onPressed: () => context.push('/add-entry'),
           ),
         ],
@@ -86,37 +87,25 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> with SingleTi
                   crossAxisSpacing: 16,
                   mainAxisSpacing: 16,
                   children: [
-                    _BentoTile(
-                      title: l10n.heartRate,
+                    _MetricTile(
+                      info: const HeartRateInfo(),
                       value: summary.heartRate?.toString() ?? '--',
-                      unit: 'bpm',
-                      icon: Icons.favorite,
-                      color: Colors.red.shade50,
-                      iconColor: Colors.red,
+                      l10n: l10n,
                     ),
-                    _BentoTile(
-                      title: l10n.steps,
+                    _MetricTile(
+                      info: const StepsInfo(),
                       value: summary.steps?.toString() ?? '--',
-                      unit: '',
-                      icon: Icons.directions_walk,
-                      color: Colors.blue.shade50,
-                      iconColor: Colors.blue,
+                      l10n: l10n,
                     ),
-                    _BentoTile(
-                      title: l10n.calories,
+                    _MetricTile(
+                      info: const CaloriesInfo(),
                       value: summary.caloriesBurned?.toString() ?? '--',
-                      unit: 'kcal',
-                      icon: Icons.local_fire_department,
-                      color: Colors.orange.shade50,
-                      iconColor: Colors.orange,
+                      l10n: l10n,
                     ),
-                    _BentoTile(
-                      title: l10n.bloodOxygen,
-                      value: summary.bloodOxygen != null ? '${summary.bloodOxygen}%' : '--',
-                      unit: '',
-                      icon: Icons.opacity,
-                      color: Colors.teal.shade50,
-                      iconColor: Colors.teal,
+                    _MetricTile(
+                      info: const BloodOxygenInfo(),
+                      value: summary.bloodOxygen != null ? '${summary.bloodOxygen}' : '--',
+                      l10n: l10n,
                     ),
                   ],
                 ),
@@ -124,14 +113,12 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> with SingleTi
               SliverPadding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 sliver: SliverToBoxAdapter(
-                  child: _BentoTile(
-                    title: l10n.exercise,
-                    value: summary.exerciseDuration != null ? '${summary.exerciseDuration} min' : '--',
-                    unit: summary.exerciseType ?? '',
-                    icon: Icons.fitness_center,
-                    color: Colors.purple.shade50,
-                    iconColor: Colors.purple,
+                  child: _MetricTile(
+                    info: const ExerciseInfo(),
+                    value: summary.exerciseDuration?.toString() ?? '--',
+                    subtitle: summary.exerciseType,
                     isFullWidth: true,
+                    l10n: l10n,
                   ),
                 ),
               ),
@@ -151,13 +138,10 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> with SingleTi
                   mainAxisSpacing: 16,
                   children: List.generate(
                     4,
-                    (index) => _BentoTile(
-                      title: 'Loading',
+                    (index) => _MetricTile(
+                      info: const HeartRateInfo(),
                       value: '00',
-                      unit: 'unit',
-                      icon: Icons.favorite,
-                      color: Colors.grey.shade50,
-                      iconColor: Colors.grey,
+                      l10n: l10n,
                     ),
                   ),
                 ),
@@ -178,77 +162,83 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> with SingleTi
   }
 }
 
-class _BentoTile extends StatelessWidget {
-  final String title;
+class _MetricTile extends StatelessWidget {
+  final HealthMetricInfo info;
   final String value;
-  final String unit;
-  final IconData icon;
-  final Color color;
-  final Color iconColor;
+  final String? subtitle;
   final bool isFullWidth;
+  final AppLocalizations l10n;
 
-  const _BentoTile({
-    required this.title,
+  const _MetricTile({
+    required this.info,
     required this.value,
-    required this.unit,
-    required this.icon,
-    required this.color,
-    required this.iconColor,
+    this.subtitle,
     this.isFullWidth = false,
+    required this.l10n,
   });
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: color,
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Icon(icon, color: iconColor),
-                if (!isFullWidth)
-                  Text(unit, style: TextStyle(color: iconColor.withValues(alpha: 0.7), fontSize: 12)),
-              ],
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.baseline,
-                  textBaseline: TextBaseline.alphabetic,
-                  children: [
-                    Text(
-                      value,
-                      style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: iconColor.withValues(alpha: 0.9),
-                          ),
+      color: info.backgroundColor,
+      child: InkWell(
+        onTap: () => context.push('/history/${info.id}'),
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Icon(info.icon, color: info.iconColor),
+                  Text(
+                    isFullWidth ? (subtitle ?? '') : info.getUnit(l10n),
+                    style: TextStyle(
+                      color: info.iconColor.withValues(alpha: 0.7),
+                      fontSize: 14,
+                      fontWeight: isFullWidth ? FontWeight.bold : FontWeight.normal,
                     ),
-                    if (isFullWidth) ...[
-                      const SizedBox(width: 8),
+                  ),
+                ],
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.baseline,
+                    textBaseline: TextBaseline.alphabetic,
+                    children: [
                       Text(
-                        unit,
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                              color: iconColor.withValues(alpha: 0.7),
+                        value,
+                        style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: info.iconColor.withValues(alpha: 0.9),
                             ),
                       ),
+                      if (isFullWidth) ...[
+                        const SizedBox(width: 4),
+                        Text(
+                          info.getUnit(l10n),
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                color: info.iconColor.withValues(alpha: 0.7),
+                              ),
+                        ),
+                      ],
                     ],
-                  ],
-                ),
-                Text(
-                  title,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: iconColor.withValues(alpha: 0.7),
-                      ),
-                ),
-              ],
-            ),
-          ],
+                  ),
+                  Text(
+                    info.getTitle(l10n),
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: info.iconColor.withValues(alpha: 0.7),
+                        ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -268,7 +258,6 @@ class _EmptyDashboard extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Placeholder SVG for empty state as per context.md
             const Icon(Icons.analytics_outlined, size: 100, color: Colors.grey),
             const SizedBox(height: 24),
             Text(
