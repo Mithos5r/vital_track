@@ -90,4 +90,16 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get passwordsDoNotMatch => 'Las contraseñas no coinciden';
+
+  @override
+  String get errorAtLeastOneField => 'Debe rellenar al menos un campo';
+
+  @override
+  String get exerciseType => 'Tipo de ejercicio';
+
+  @override
+  String get exerciseDuration => 'Duración (minutos)';
+
+  @override
+  String get invalidNumber => 'Número inválido';
 }

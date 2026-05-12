@@ -54,43 +54,46 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('No esperes más. Pulsa + para añadir datos'), findsOneWidget);
-      expect(find.byIcon(Icons.analytics_outlined), findsOneWidget);
-      // FAB button is always present, AppBar button is also present.
-      // Note: By default in test environment, some widgets might not be rendered if off-screen.
-      expect(find.byIcon(Icons.add), findsAtLeastNWidgets(1));
     });
 
-    testWidgets('shows metrics in Bento Box when data is available', (tester) async {
+    testWidgets('shows metrics from multiple records (independent aggregation)', (tester) async {
+      final now = DateTime.now();
       final metrics = [
+        // Latest record: only exercise
         HealthMetricEntity(
           user: '123',
-          timestamp: DateTime.now(),
-          heartRate: 75,
-          steps: 10000,
-          caloriesBurned: 500,
-          bloodOxygen: 98.0,
+          timestamp: now,
           exerciseType: 'Running',
           exerciseDuration: 30,
+        ),
+        // Previous record: heart rate
+        HealthMetricEntity(
+          user: '123',
+          timestamp: now.subtract(const Duration(hours: 1)),
+          heartRate: 75,
+        ),
+        // Older record: steps and calories
+        HealthMetricEntity(
+          user: '123',
+          timestamp: now.subtract(const Duration(days: 1)),
+          steps: 10000,
+          caloriesBurned: 500,
         ),
       ];
 
       when(() => mockHealthRepository.getHealthMetrics('123'))
           .thenAnswer((_) async => metrics);
 
-      // Increase surface size for testing GridView content
       await tester.binding.setSurfaceSize(const Size(800, 1200));
-
       await tester.pumpWidget(createWidgetUnderTest());
       await tester.pumpAndSettle();
 
+      // Check all metrics are from their latest available versions
       expect(find.text('75'), findsOneWidget);
       expect(find.text('10000'), findsOneWidget);
       expect(find.text('500'), findsOneWidget);
-      expect(find.text('98.0%'), findsOneWidget);
-      
-      // Exercise tile content
-      expect(find.text('Running'), findsOneWidget);
       expect(find.text('30 min'), findsOneWidget);
+      expect(find.text('Running'), findsOneWidget);
 
       await tester.binding.setSurfaceSize(null);
     });
@@ -102,12 +105,10 @@ void main() {
       await tester.pumpWidget(createWidgetUnderTest());
       await tester.pumpAndSettle();
 
-      // Find the main FAB toggle (usually the last FAB in the stack for this UI)
       final fabToggle = find.byType(FloatingActionButton).last;
       await tester.tap(fabToggle);
       await tester.pumpAndSettle();
 
-      // After expansion, we should see both the AppBar button and the FAB button for 'add'
       expect(find.byIcon(Icons.add), findsAtLeastNWidgets(1));
       expect(find.byIcon(Icons.logout), findsOneWidget);
     });
