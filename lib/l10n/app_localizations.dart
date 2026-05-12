@@ -207,6 +207,54 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Ejercicio'**
   String get exercise;
+
+  /// No description provided for @fieldRequired.
+  ///
+  /// In es, this message translates to:
+  /// **'Campo requerido'**
+  String get fieldRequired;
+
+  /// No description provided for @invalidEmail.
+  ///
+  /// In es, this message translates to:
+  /// **'Email inválido'**
+  String get invalidEmail;
+
+  /// No description provided for @passwordTooShort.
+  ///
+  /// In es, this message translates to:
+  /// **'Mínimo 6 caracteres'**
+  String get passwordTooShort;
+
+  /// No description provided for @passwordRequiresUppercase.
+  ///
+  /// In es, this message translates to:
+  /// **'Requiere una mayúscula'**
+  String get passwordRequiresUppercase;
+
+  /// No description provided for @passwordRequiresLowercase.
+  ///
+  /// In es, this message translates to:
+  /// **'Requiere una minúscula'**
+  String get passwordRequiresLowercase;
+
+  /// No description provided for @passwordRequiresNumber.
+  ///
+  /// In es, this message translates to:
+  /// **'Requiere un número'**
+  String get passwordRequiresNumber;
+
+  /// No description provided for @passwordRequiresSpecialChar.
+  ///
+  /// In es, this message translates to:
+  /// **'Requiere un carácter especial'**
+  String get passwordRequiresSpecialChar;
+
+  /// No description provided for @passwordsDoNotMatch.
+  ///
+  /// In es, this message translates to:
+  /// **'Las contraseñas no coinciden'**
+  String get passwordsDoNotMatch;
 }
 
 class _AppLocalizationsDelegate
