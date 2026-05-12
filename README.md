@@ -66,3 +66,4 @@ Si contara con más tiempo, estas serían las prioridades:
 3.  **Visualización de Tendencias**: Añadir gráficos (vía `fl_chart`) en la pantalla de historial para observar la evolución de las métricas a lo largo del tiempo.
 4.  **Notificaciones Push**: Avisar al usuario si la sincronización en segundo plano se detiene por falta de permisos o si se detectan anomalías en las métricas.
 5.  **Splash nativo Android**: El splash nativo de android no se ve correctamente para dispositivos de android 12 o superior.
+6.  **Github action**: Añadir todo el sistema de github action.
