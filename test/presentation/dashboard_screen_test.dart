@@ -92,7 +92,10 @@ void main() {
       expect(find.text('75'), findsOneWidget);
       expect(find.text('10000'), findsOneWidget);
       expect(find.text('500'), findsOneWidget);
-      expect(find.text('30 min'), findsOneWidget);
+      
+      // Exercise tile content: Duration is '30' and Unit is 'min'
+      expect(find.text('30'), findsOneWidget);
+      expect(find.text('min'), findsOneWidget);
       expect(find.text('Running'), findsOneWidget);
 
       await tester.binding.setSurfaceSize(null);

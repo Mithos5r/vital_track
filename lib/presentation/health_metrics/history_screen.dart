@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import '../../core/constants/health_metrics_info.dart';
 import '../../domain/health_metrics/health_metric_entity.dart';
 import '../../l10n/app_localizations.dart';
 import 'history_notifier.dart';
@@ -18,16 +19,16 @@ class HistoryScreen extends ConsumerWidget {
     final l10n = AppLocalizations.of(context)!;
     final historyAsync = ref.watch(historyProvider(param));
     
-    final title = _getTitle(l10n);
+    final info = HealthMetricInfo.fromId(param);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        title: Text(info.getTitle(l10n)),
       ),
       body: historyAsync.when(
         data: (metrics) {
           if (metrics.isEmpty) {
-            return _EmptyHistory(l10n: l10n, paramName: title);
+            return _EmptyHistory(l10n: l10n, paramName: info.getTitle(l10n));
           }
           return ListView.separated(
             padding: const EdgeInsets.all(16),
@@ -37,7 +38,8 @@ class HistoryScreen extends ConsumerWidget {
               final metric = metrics[index];
               return _HistoryItem(
                 metric: metric,
-                param: param,
+                info: info,
+                l10n: l10n,
               );
             },
           );
@@ -47,26 +49,17 @@ class HistoryScreen extends ConsumerWidget {
       ),
     );
   }
-
-  String _getTitle(AppLocalizations l10n) {
-    return switch (param) {
-      'heartRate' => l10n.heartRate,
-      'bloodOxygen' => l10n.bloodOxygen,
-      'steps' => l10n.steps,
-      'calories' => l10n.calories,
-      'exercise' => l10n.exercise,
-      _ => 'Historial',
-    };
-  }
 }
 
 class _HistoryItem extends StatelessWidget {
   final HealthMetricEntity metric;
-  final String param;
+  final HealthMetricInfo info;
+  final AppLocalizations l10n;
 
   const _HistoryItem({
     required this.metric,
-    required this.param,
+    required this.info,
+    required this.l10n,
   });
 
   @override
@@ -80,33 +73,33 @@ class _HistoryItem extends StatelessWidget {
           dateFormat.format(metric.timestamp),
           style: Theme.of(context).textTheme.bodySmall,
         ),
-        trailing: _getIcon(),
+        trailing: Icon(info.icon, color: info.iconColor),
       ),
     );
   }
 
   Widget _buildValueText(BuildContext context) {
-    if (param == 'exercise') {
+    if (info is ExerciseInfo) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            metric.exerciseType ?? 'Desconocido',
+            '${metric.exerciseDuration ?? 0} ${info.getUnit(l10n)}',
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
           Text(
-            '${metric.exerciseDuration ?? 0} min',
+            metric.exerciseType ?? 'Desconocido',
             style: Theme.of(context).textTheme.bodyMedium,
           ),
         ],
       );
     }
 
-    final value = switch (param) {
-      'heartRate' => '${metric.heartRate} bpm',
-      'bloodOxygen' => '${metric.bloodOxygen}%',
+    final value = switch (info.id) {
+      'heartRate' => '${metric.heartRate} ${info.getUnit(l10n)}',
+      'bloodOxygen' => '${metric.bloodOxygen}${info.getUnit(l10n)}',
       'steps' => '${metric.steps} pasos',
-      'calories' => '${metric.caloriesBurned} kcal',
+      'calories' => '${metric.caloriesBurned} ${info.getUnit(l10n)}',
       _ => '--',
     };
 
@@ -114,28 +107,6 @@ class _HistoryItem extends StatelessWidget {
       value,
       style: const TextStyle(fontWeight: FontWeight.bold),
     );
-  }
-
-  Widget _getIcon() {
-    final iconData = switch (param) {
-      'heartRate' => Icons.favorite,
-      'bloodOxygen' => Icons.opacity,
-      'steps' => Icons.directions_walk,
-      'calories' => Icons.local_fire_department,
-      'exercise' => Icons.fitness_center,
-      _ => Icons.help_outline,
-    };
-
-    final color = switch (param) {
-      'heartRate' => Colors.red,
-      'bloodOxygen' => Colors.teal,
-      'steps' => Colors.blue,
-      'calories' => Colors.orange,
-      'exercise' => Colors.purple,
-      _ => Colors.grey,
-    };
-
-    return Icon(iconData, color: color);
   }
 }
 
