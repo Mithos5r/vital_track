@@ -64,7 +64,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> with SingleTi
           IconButton(
             key: const Key('add-entry-button'),
             icon: const Icon(Icons.add),
-            tooltip: l10n.save, // Or use a new 'add' string
+            tooltip: l10n.save,
             onPressed: () => context.push('/add-entry'),
           ),
         ],
@@ -93,6 +93,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> with SingleTi
                       icon: Icons.favorite,
                       color: Colors.red.shade50,
                       iconColor: Colors.red,
+                      onTap: () => context.push('/history/heartRate'),
                     ),
                     _BentoTile(
                       title: l10n.steps,
@@ -101,6 +102,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> with SingleTi
                       icon: Icons.directions_walk,
                       color: Colors.blue.shade50,
                       iconColor: Colors.blue,
+                      onTap: () => context.push('/history/steps'),
                     ),
                     _BentoTile(
                       title: l10n.calories,
@@ -109,6 +111,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> with SingleTi
                       icon: Icons.local_fire_department,
                       color: Colors.orange.shade50,
                       iconColor: Colors.orange,
+                      onTap: () => context.push('/history/calories'),
                     ),
                     _BentoTile(
                       title: l10n.bloodOxygen,
@@ -117,6 +120,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> with SingleTi
                       icon: Icons.opacity,
                       color: Colors.teal.shade50,
                       iconColor: Colors.teal,
+                      onTap: () => context.push('/history/bloodOxygen'),
                     ),
                   ],
                 ),
@@ -132,6 +136,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> with SingleTi
                     color: Colors.purple.shade50,
                     iconColor: Colors.purple,
                     isFullWidth: true,
+                    onTap: () => context.push('/history/exercise'),
                   ),
                 ),
               ),
@@ -186,6 +191,7 @@ class _BentoTile extends StatelessWidget {
   final Color color;
   final Color iconColor;
   final bool isFullWidth;
+  final VoidCallback? onTap;
 
   const _BentoTile({
     required this.title,
@@ -195,60 +201,65 @@ class _BentoTile extends StatelessWidget {
     required this.color,
     required this.iconColor,
     this.isFullWidth = false,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     return Card(
       color: color,
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Icon(icon, color: iconColor),
-                if (!isFullWidth)
-                  Text(unit, style: TextStyle(color: iconColor.withValues(alpha: 0.7), fontSize: 12)),
-              ],
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.baseline,
-                  textBaseline: TextBaseline.alphabetic,
-                  children: [
-                    Text(
-                      value,
-                      style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: iconColor.withValues(alpha: 0.9),
-                          ),
-                    ),
-                    if (isFullWidth) ...[
-                      const SizedBox(width: 8),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Icon(icon, color: iconColor),
+                  if (!isFullWidth)
+                    Text(unit, style: TextStyle(color: iconColor.withValues(alpha: 0.7), fontSize: 12)),
+                ],
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.baseline,
+                    textBaseline: TextBaseline.alphabetic,
+                    children: [
                       Text(
-                        unit,
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                              color: iconColor.withValues(alpha: 0.7),
+                        value,
+                        style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: iconColor.withValues(alpha: 0.9),
                             ),
                       ),
+                      if (isFullWidth) ...[
+                        const SizedBox(width: 8),
+                        Text(
+                          unit,
+                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                color: iconColor.withValues(alpha: 0.7),
+                              ),
+                        ),
+                      ],
                     ],
-                  ],
-                ),
-                Text(
-                  title,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: iconColor.withValues(alpha: 0.7),
-                      ),
-                ),
-              ],
-            ),
-          ],
+                  ),
+                  Text(
+                    title,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: iconColor.withValues(alpha: 0.7),
+                        ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -268,7 +279,6 @@ class _EmptyDashboard extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Placeholder SVG for empty state as per context.md
             const Icon(Icons.analytics_outlined, size: 100, color: Colors.grey),
             const SizedBox(height: 24),
             Text(
