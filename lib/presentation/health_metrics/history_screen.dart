@@ -28,10 +28,7 @@ class HistoryScreen extends ConsumerWidget {
           return ListView.separated(
             padding: const EdgeInsets.all(16),
             itemCount: metrics.length,
-            separatorBuilder: (context, index) => ColoredBox(
-              color: Colors.black,
-              child: const SizedBox(height: 24),
-            ),
+            separatorBuilder: (context, index) => const SizedBox(height: 24),
             itemBuilder: (context, index) {
               final metric = metrics[index];
               return Dismissible(
