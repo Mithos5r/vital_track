@@ -1,0 +1,29 @@
+{
+  "@@locale": "es",
+  "appTitle": "VitalTrack",
+  "loading": "Cargando...",
+  "login": "Acceder",
+  "register": "Crear cuenta",
+  "email": "Email",
+  "password": "Contraseña",
+  "confirmPassword": "Confirmar Contraseña",
+  "errorUserNotFound": "el usuario no existe",
+  "errorWrongPassword": "usuario o contraseña incorrecto",
+  "errorGenericAuth": "Error al crear la cuenta, intente de nuevo",
+  "homeTitle": "VitalTrack",
+  "noDataHome": "No esperes más. Pulsa + para añadir datos",
+  "noDataHistory": "No hay registros disponibles para {param}",
+  "@noDataHistory": {
+    "placeholders": {
+      "param": {
+        "type": "String"
+      }
+    }
+  },
+  "save": "Guardar",
+  "heartRate": "Pulsaciones",
+  "bloodOxygen": "Oxígeno en sangre",
+  "steps": "Pasos",
+  "calories": "Calorías",
+  "exercise": "Ejercicio"
+}
