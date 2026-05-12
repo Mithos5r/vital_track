@@ -32,6 +32,13 @@ class HealthLocalDataSource {
         .get();
   }
 
+  Future<List<HealthMetric>> getMetricsSince(String userId, DateTime since) {
+    return (_db.select(_db.healthMetrics)
+          ..where((t) => t.user.equals(userId) & t.timestamp.isBiggerOrEqualValue(since))
+          ..orderBy([(t) => OrderingTerm(expression: t.timestamp, mode: OrderingMode.asc)]))
+        .get();
+  }
+
   Future<void> deleteMetric(int id) {
     return (_db.delete(_db.healthMetrics)..where((t) => t.id.equals(id))).go();
   }

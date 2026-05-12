@@ -6,4 +6,5 @@ abstract class HealthRepository {
   Future<void> saveHealthMetric(HealthMetricEntity entity);
   Future<void> deleteHealthMetric(int id);
   Future<void> clearMetricProperty(int id, String property);
+  Future<List<HealthMetricEntity>> getHealthMetricsSince(String userId, DateTime since);
 }
