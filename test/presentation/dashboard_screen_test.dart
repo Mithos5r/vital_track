@@ -107,6 +107,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byIcon(Icons.add), findsAtLeastNWidgets(1));
+      expect(find.byIcon(Icons.share), findsOneWidget);
       expect(find.byIcon(Icons.logout), findsOneWidget);
     });
   });

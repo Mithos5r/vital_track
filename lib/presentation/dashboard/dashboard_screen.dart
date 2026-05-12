@@ -3,8 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:share_plus/share_plus.dart';
 import '../../core/constants/health_metrics_info.dart';
 import '../../data/firebase_auth/auth_repository_impl.dart';
+import '../../data/health_metrics/health_repository_impl.dart';
 import '../../domain/health_metrics/dashboard_summary.dart';
 import '../../data/health_metrics/shared_prefs_data_source.dart';
 import '../../l10n/app_localizations.dart';
@@ -52,6 +54,37 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> with SingleTi
         _fabController.reverse();
       }
     });
+  }
+
+  Future<void> _shareHistory(AppLocalizations l10n) async {
+    final user = ref.read(authRepositoryProvider).currentUser;
+    if (user == null) return;
+
+    final box = context.findRenderObject() as RenderBox?;
+    final sharePositionOrigin = box != null ? box.localToGlobal(Offset.zero) & box.size : null;
+
+    final sevenDaysAgo = DateTime.now().subtract(const Duration(days: 7));
+    final json = await ref.read(exportHealthDataUseCaseProvider).execute(
+          userId: user.uid,
+          sinceDate: sevenDaysAgo,
+        );
+
+    if (json == '[]') {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.noDataHistory(''))),
+        );
+      }
+      return;
+    }
+
+    await SharePlus.instance.share(
+      ShareParams(
+        text: json,
+        subject: 'VitalTrack History (Last 7 Days)',
+        sharePositionOrigin: sharePositionOrigin,
+      ),
+    );
   }
 
   void _showPermissionErrorDialog(AppLocalizations l10n) {
@@ -192,6 +225,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> with SingleTi
         onToggle: _toggleFab,
         onAdd: () => context.push('/add-entry'),
         onLogout: () => ref.read(authRepositoryProvider).signOut(),
+        onShare: () => _shareHistory(l10n),
       ),
     );
   }
@@ -314,6 +348,7 @@ class _ExpandableFab extends StatelessWidget {
   final VoidCallback onToggle;
   final VoidCallback onAdd;
   final VoidCallback onLogout;
+  final VoidCallback onShare;
 
   const _ExpandableFab({
     required this.isExpanded,
@@ -321,6 +356,7 @@ class _ExpandableFab extends StatelessWidget {
     required this.onToggle,
     required this.onAdd,
     required this.onLogout,
+    required this.onShare,
   });
 
   @override
@@ -332,6 +368,12 @@ class _ExpandableFab extends StatelessWidget {
         _buildFabItem(
           icon: Icons.logout,
           onPressed: onLogout,
+          index: 2,
+        ),
+        const SizedBox(height: 16),
+        _buildFabItem(
+          icon: Icons.share,
+          onPressed: onShare,
           index: 1,
         ),
         const SizedBox(height: 16),
