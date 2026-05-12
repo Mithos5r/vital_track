@@ -1,6 +1,10 @@
+import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 
+part 'health_metric_entity.g.dart';
+
 @immutable
+@JsonSerializable(fieldRename: FieldRename.snake)
 class HealthMetricEntity {
   final int? id;
   final String user;
@@ -47,6 +51,11 @@ class HealthMetricEntity {
       exerciseDuration: exerciseDuration ?? this.exerciseDuration,
     );
   }
+
+  factory HealthMetricEntity.fromJson(Map<String, dynamic> json) =>
+      _$HealthMetricEntityFromJson(json);
+
+  Map<String, dynamic> toJson() => _$HealthMetricEntityToJson(this);
 
   @override
   bool operator ==(Object other) =>

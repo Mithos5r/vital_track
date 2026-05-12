@@ -6,6 +6,7 @@ import '../../domain/health_metrics/health_metric_entity.dart';
 import '../../domain/health_metrics/health_repository.dart';
 import '../../domain/health_metrics/delete_metric_use_case.dart';
 import '../../domain/health_metrics/clear_metric_property_use_case.dart';
+import '../../domain/health_metrics/export_health_data_use_case.dart';
 
 part 'health_repository_impl.g.dart';
 
@@ -86,6 +87,22 @@ class HealthRepositoryImpl implements HealthRepository {
       await _dataSource.updateMetric(companion);
     }
   }
+
+  @override
+  Future<List<HealthMetricEntity>> getHealthMetricsSince(String userId, DateTime since) async {
+    final metrics = await _dataSource.getMetricsSince(userId, since);
+    return metrics.map((m) => HealthMetricEntity(
+      id: m.id,
+      user: m.user,
+      timestamp: m.timestamp,
+      heartRate: m.heartRate,
+      bloodOxygen: m.bloodOxygen,
+      steps: m.steps,
+      caloriesBurned: m.caloriesBurned,
+      exerciseType: m.exerciseType,
+      exerciseDuration: m.exerciseDuration,
+    )).toList();
+  }
 }
 
 @riverpod
@@ -96,6 +113,11 @@ HealthLocalDataSource healthLocalDataSource(Ref ref) {
 @riverpod
 HealthRepository healthRepository(Ref ref) {
   return HealthRepositoryImpl(ref.watch(healthLocalDataSourceProvider));
+}
+
+@riverpod
+ExportHealthDataUseCase exportHealthDataUseCase(Ref ref) {
+  return ExportHealthDataUseCase(ref.watch(healthRepositoryProvider));
 }
 
 @riverpod

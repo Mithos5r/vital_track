@@ -103,6 +103,54 @@ final class HealthRepositoryProvider
 
 String _$healthRepositoryHash() => r'e971e6c13df903fdb1d125b381226bc264eca43b';
 
+@ProviderFor(exportHealthDataUseCase)
+final exportHealthDataUseCaseProvider = ExportHealthDataUseCaseProvider._();
+
+final class ExportHealthDataUseCaseProvider
+    extends
+        $FunctionalProvider<
+          ExportHealthDataUseCase,
+          ExportHealthDataUseCase,
+          ExportHealthDataUseCase
+        >
+    with $Provider<ExportHealthDataUseCase> {
+  ExportHealthDataUseCaseProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'exportHealthDataUseCaseProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$exportHealthDataUseCaseHash();
+
+  @$internal
+  @override
+  $ProviderElement<ExportHealthDataUseCase> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  ExportHealthDataUseCase create(Ref ref) {
+    return exportHealthDataUseCase(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(ExportHealthDataUseCase value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<ExportHealthDataUseCase>(value),
+    );
+  }
+}
+
+String _$exportHealthDataUseCaseHash() =>
+    r'f138e445b73b4c0a97c905148a953cb90259990e';
+
 @ProviderFor(clearMetricPropertyUseCase)
 final clearMetricPropertyUseCaseProvider =
     ClearMetricPropertyUseCaseProvider._();
