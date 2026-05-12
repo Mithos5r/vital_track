@@ -33,5 +33,9 @@
   "passwordRequiresLowercase": "Requiere una minúscula",
   "passwordRequiresNumber": "Requiere un número",
   "passwordRequiresSpecialChar": "Requiere un carácter especial",
-  "passwordsDoNotMatch": "Las contraseñas no coinciden"
+  "passwordsDoNotMatch": "Las contraseñas no coinciden",
+  "errorAtLeastOneField": "Debe rellenar al menos un campo",
+  "exerciseType": "Tipo de ejercicio",
+  "exerciseDuration": "Duración (minutos)",
+  "invalidNumber": "Número inválido"
 }

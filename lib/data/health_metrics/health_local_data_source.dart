@@ -11,7 +11,10 @@ class HealthLocalDataSource {
   }
 
   Future<List<HealthMetric>> getMetricsByUser(String userId) {
-    return (_db.select(_db.healthMetrics)..where((t) => t.user.equals(userId))).get();
+    return (_db.select(_db.healthMetrics)
+          ..where((t) => t.user.equals(userId))
+          ..orderBy([(t) => OrderingTerm(expression: t.timestamp, mode: OrderingMode.desc)]))
+        .get();
   }
 
   Future<List<HealthMetric>> getLatestMetricsByUser(String userId) {

@@ -255,6 +255,30 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Las contraseñas no coinciden'**
   String get passwordsDoNotMatch;
+
+  /// No description provided for @errorAtLeastOneField.
+  ///
+  /// In es, this message translates to:
+  /// **'Debe rellenar al menos un campo'**
+  String get errorAtLeastOneField;
+
+  /// No description provided for @exerciseType.
+  ///
+  /// In es, this message translates to:
+  /// **'Tipo de ejercicio'**
+  String get exerciseType;
+
+  /// No description provided for @exerciseDuration.
+  ///
+  /// In es, this message translates to:
+  /// **'Duración (minutos)'**
+  String get exerciseDuration;
+
+  /// No description provided for @invalidNumber.
+  ///
+  /// In es, this message translates to:
+  /// **'Número inválido'**
+  String get invalidNumber;
 }
 
 class _AppLocalizationsDelegate

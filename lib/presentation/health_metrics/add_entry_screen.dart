@@ -34,7 +34,7 @@ class _AddEntryScreenState extends ConsumerState<AddEntryScreen> {
     super.dispose();
   }
 
-  Future<void> _submit() async {
+  Future<void> _submit(AppLocalizations l10n) async {
     if (!(_formKey.currentState?.validate() ?? false)) return;
 
     final hr = int.tryParse(_heartRateController.text);
@@ -47,7 +47,7 @@ class _AddEntryScreenState extends ConsumerState<AddEntryScreen> {
     // Context.md requirement: Cannot save a completely empty form
     if (hr == null && bo == null && st == null && cal == null && exType.isEmpty && exDur == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Debe rellenar al menos un campo')),
+        SnackBar(content: Text(l10n.errorAtLeastOneField)),
       );
       return;
     }
@@ -83,7 +83,7 @@ class _AddEntryScreenState extends ConsumerState<AddEntryScreen> {
         title: Text(l10n.appTitle),
         actions: [
           IconButton(
-            onPressed: state.isLoading ? null : _submit,
+            onPressed: state.isLoading ? null : () => _submit(l10n),
             icon: const Icon(Icons.check),
           ),
         ],
@@ -100,6 +100,7 @@ class _AddEntryScreenState extends ConsumerState<AddEntryScreen> {
                   controller: _heartRateController,
                   label: l10n.heartRate,
                   icon: Icons.favorite_outline,
+                  l10n: l10n,
                 ),
                 const SizedBox(height: 16),
                 _buildNumericField(
@@ -107,18 +108,21 @@ class _AddEntryScreenState extends ConsumerState<AddEntryScreen> {
                   label: l10n.bloodOxygen,
                   icon: Icons.opacity,
                   isDecimal: true,
+                  l10n: l10n,
                 ),
                 const SizedBox(height: 16),
                 _buildNumericField(
                   controller: _stepsController,
                   label: l10n.steps,
                   icon: Icons.directions_walk,
+                  l10n: l10n,
                 ),
                 const SizedBox(height: 16),
                 _buildNumericField(
                   controller: _caloriesController,
                   label: l10n.calories,
                   icon: Icons.local_fire_department_outlined,
+                  l10n: l10n,
                 ),
                 const SizedBox(height: 24),
                 const Divider(),
@@ -131,7 +135,7 @@ class _AddEntryScreenState extends ConsumerState<AddEntryScreen> {
                 TextFormField(
                   controller: _exerciseTypeController,
                   decoration: InputDecoration(
-                    labelText: 'Tipo de ejercicio',
+                    labelText: l10n.exerciseType,
                     prefixIcon: const Icon(Icons.fitness_center),
                   ),
                   validator: (value) {
@@ -147,7 +151,7 @@ class _AddEntryScreenState extends ConsumerState<AddEntryScreen> {
                 TextFormField(
                   controller: _exerciseDurationController,
                   decoration: InputDecoration(
-                    labelText: 'Duración (minutos)',
+                    labelText: l10n.exerciseDuration,
                     prefixIcon: const Icon(Icons.timer_outlined),
                   ),
                   keyboardType: TextInputType.number,
@@ -158,13 +162,13 @@ class _AddEntryScreenState extends ConsumerState<AddEntryScreen> {
                       }
                       return null;
                     }
-                    if (int.tryParse(value) == null) return 'Número inválido';
+                    if (int.tryParse(value) == null) return l10n.invalidNumber;
                     return null;
                   },
                 ),
                 const SizedBox(height: 40),
                 ElevatedButton(
-                  onPressed: state.isLoading ? null : _submit,
+                  onPressed: state.isLoading ? null : () => _submit(l10n),
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
                   ),
@@ -184,6 +188,7 @@ class _AddEntryScreenState extends ConsumerState<AddEntryScreen> {
     required TextEditingController controller,
     required String label,
     required IconData icon,
+    required AppLocalizations l10n,
     bool isDecimal = false,
   }) {
     return TextFormField(
@@ -196,9 +201,9 @@ class _AddEntryScreenState extends ConsumerState<AddEntryScreen> {
       validator: (value) {
         if (value == null || value.isEmpty) return null;
         if (isDecimal) {
-          if (double.tryParse(value) == null) return 'Número inválido';
+          if (double.tryParse(value) == null) return l10n.invalidNumber;
         } else {
-          if (int.tryParse(value) == null) return 'Número inválido';
+          if (int.tryParse(value) == null) return l10n.invalidNumber;
         }
         return null;
       },
