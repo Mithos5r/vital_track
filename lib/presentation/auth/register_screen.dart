@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/constants/assets.gen.dart';
 import '../../core/theme/snack_bar/vital_track_snack_bars.dart';
 import '../../core/theme/text_form_field/password_field.dart';
+import '../../domain/auth/auth_exceptions.dart';
 import '../../l10n/app_localizations.dart';
 import 'register_controller.dart';
 
@@ -44,7 +45,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     return null;
   }
 
-  Future<void> _submit() async {
+  Future<void> _submit(AppLocalizations l10n) async {
     if (!(_formKey.currentState?.validate() ?? false)) return;
 
     final success = await ref.read(registerControllerProvider.notifier).signUp(
@@ -54,7 +55,11 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
     if (!success && mounted) {
       final error = ref.read(registerControllerProvider).error;
-      VitalTrackSnackBars.showError(context, error.toString());
+      if (error is AuthException) {
+        VitalTrackSnackBars.showError(context, error.getLocalizedMessage(l10n));
+      } else {
+        VitalTrackSnackBars.showError(context, l10n.errorGenericAuth);
+      }
     }
   }
 
@@ -120,7 +125,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   controller: _confirmPasswordController,
                   labelText: l10n.confirmPassword,
                   textInputAction: TextInputAction.done,
-                  onFieldSubmitted: (_) => _submit(),
+                  onFieldSubmitted: (_) => _submit(l10n),
                   validator: (value) {
                     if (value == null || value.isEmpty) return l10n.fieldRequired;
                     if (value != _passwordController.text) return l10n.passwordsDoNotMatch;
@@ -130,7 +135,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 const SizedBox(height: 32),
                 // Submit Button
                 ElevatedButton(
-                  onPressed: state.isLoading ? null : _submit,
+                  onPressed: state.isLoading ? null : () => _submit(l10n),
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     backgroundColor: Theme.of(context).colorScheme.primary,

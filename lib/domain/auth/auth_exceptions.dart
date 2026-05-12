@@ -1,24 +1,30 @@
+import '../../l10n/app_localizations.dart';
+
 sealed class AuthException implements Exception {
-  final String message;
-  AuthException(this.message);
+  String getLocalizedMessage(AppLocalizations l10n);
 }
 
 class UserNotFoundException extends AuthException {
-  UserNotFoundException() : super('el usuario no existe');
+  @override
+  String getLocalizedMessage(AppLocalizations l10n) => l10n.errorUserNotFound;
 }
 
 class WrongPasswordException extends AuthException {
-  WrongPasswordException() : super('usuario o contraseña incorrecto');
+  @override
+  String getLocalizedMessage(AppLocalizations l10n) => l10n.errorWrongPassword;
 }
 
 class EmailAlreadyInUseException extends AuthException {
-  EmailAlreadyInUseException() : super('Error al crear la cuenta, intente de nuevo');
+  @override
+  String getLocalizedMessage(AppLocalizations l10n) => l10n.errorGenericAuth;
 }
 
 class WeakPasswordException extends AuthException {
-  WeakPasswordException() : super('Error al crear la cuenta, intente de nuevo');
+  @override
+  String getLocalizedMessage(AppLocalizations l10n) => l10n.errorGenericAuth;
 }
 
 class GenericAuthException extends AuthException {
-  GenericAuthException() : super('Error al crear la cuenta, intente de nuevo');
+  @override
+  String getLocalizedMessage(AppLocalizations l10n) => l10n.errorGenericAuth;
 }

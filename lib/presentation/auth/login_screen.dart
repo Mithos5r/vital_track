@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/constants/assets.gen.dart';
 import '../../core/theme/snack_bar/vital_track_snack_bars.dart';
 import '../../core/theme/text_form_field/password_field.dart';
+import '../../domain/auth/auth_exceptions.dart';
 import '../../l10n/app_localizations.dart';
 import 'login_controller.dart';
 
@@ -26,7 +27,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     super.dispose();
   }
 
-  Future<void> _submit() async {
+  Future<void> _submit(AppLocalizations l10n) async {
     if (!(_formKey.currentState?.validate() ?? false)) return;
 
     final success = await ref.read(loginControllerProvider.notifier).signIn(
@@ -36,7 +37,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
     if (!success && mounted) {
       final error = ref.read(loginControllerProvider).error;
-      VitalTrackSnackBars.showError(context, error.toString());
+      if (error is AuthException) {
+        VitalTrackSnackBars.showError(context, error.getLocalizedMessage(l10n));
+      } else {
+        VitalTrackSnackBars.showError(context, l10n.errorGenericAuth);
+      }
     }
   }
 
@@ -85,7 +90,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   controller: _passwordController,
                   labelText: l10n.password,
                   textInputAction: TextInputAction.done,
-                  onFieldSubmitted: (_) => _submit(),
+                  onFieldSubmitted: (_) => _submit(l10n),
                   validator: (value) {
                     if (value == null || value.isEmpty) return l10n.fieldRequired;
                     return null;
@@ -94,7 +99,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 const SizedBox(height: 32),
                 // Submit Button
                 ElevatedButton(
-                  onPressed: state.isLoading ? null : _submit,
+                  onPressed: state.isLoading ? null : () => _submit(l10n),
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     backgroundColor: Theme.of(context).colorScheme.primary,
