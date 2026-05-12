@@ -194,9 +194,14 @@ class _MetricTile extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Icon(info.icon, color: info.iconColor),
-                  if (!isFullWidth)
-                    Text(info.getUnit(l10n),
-                        style: TextStyle(color: info.iconColor.withValues(alpha: 0.7), fontSize: 12)),
+                  Text(
+                    isFullWidth ? (subtitle ?? '') : info.getUnit(l10n),
+                    style: TextStyle(
+                      color: info.iconColor.withValues(alpha: 0.7),
+                      fontSize: 14,
+                      fontWeight: isFullWidth ? FontWeight.bold : FontWeight.normal,
+                    ),
+                  ),
                 ],
               ),
               Column(
@@ -213,23 +218,13 @@ class _MetricTile extends StatelessWidget {
                               color: info.iconColor.withValues(alpha: 0.9),
                             ),
                       ),
-                      const SizedBox(width: 4),
-                      Text(
-                        isFullWidth ? info.getUnit(l10n) : '',
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: info.iconColor.withValues(alpha: 0.7),
-                            ),
-                      ),
-                      if (subtitle != null) ...[
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            subtitle!,
-                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                  color: info.iconColor.withValues(alpha: 0.7),
-                                ),
-                            overflow: TextOverflow.ellipsis,
-                          ),
+                      if (isFullWidth) ...[
+                        const SizedBox(width: 4),
+                        Text(
+                          info.getUnit(l10n),
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                color: info.iconColor.withValues(alpha: 0.7),
+                              ),
                         ),
                       ],
                     ],
