@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/constants/assets.gen.dart';
 import '../../core/theme/snack_bar/vital_track_snack_bars.dart';
+import '../../core/theme/text_form_field/password_field.dart';
 import '../../l10n/app_localizations.dart';
 import 'register_controller.dart';
 
@@ -107,25 +108,17 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 ),
                 const SizedBox(height: 16),
                 // Password Field
-                TextFormField(
+                VitalTrackPasswordField(
                   controller: _passwordController,
-                  decoration: InputDecoration(
-                    labelText: l10n.password,
-                    prefixIcon: const Icon(Icons.lock_outline),
-                  ),
-                  obscureText: true,
+                  labelText: l10n.password,
                   textInputAction: TextInputAction.next,
                   validator: (v) => _validatePassword(v, l10n),
                 ),
                 const SizedBox(height: 16),
                 // Confirm Password Field
-                TextFormField(
+                VitalTrackPasswordField(
                   controller: _confirmPasswordController,
-                  decoration: InputDecoration(
-                    labelText: l10n.confirmPassword,
-                    prefixIcon: const Icon(Icons.lock_reset),
-                  ),
-                  obscureText: true,
+                  labelText: l10n.confirmPassword,
                   textInputAction: TextInputAction.done,
                   onFieldSubmitted: (_) => _submit(),
                   validator: (value) {

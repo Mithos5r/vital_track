@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/constants/assets.gen.dart';
 import '../../core/theme/snack_bar/vital_track_snack_bars.dart';
+import '../../core/theme/text_form_field/password_field.dart';
 import '../../l10n/app_localizations.dart';
 import 'login_controller.dart';
 
@@ -80,13 +81,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 ),
                 const SizedBox(height: 16),
                 // Password Field
-                TextFormField(
+                VitalTrackPasswordField(
                   controller: _passwordController,
-                  decoration: InputDecoration(
-                    labelText: l10n.password,
-                    prefixIcon: const Icon(Icons.lock_outline),
-                  ),
-                  obscureText: true,
+                  labelText: l10n.password,
                   textInputAction: TextInputAction.done,
                   onFieldSubmitted: (_) => _submit(),
                   validator: (value) {
