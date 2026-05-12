@@ -38,5 +38,9 @@
   "exerciseType": "Tipo de ejercicio",
   "exerciseDuration": "Duración (minutos)",
   "invalidNumber": "Número inválido",
-  "recordDeleted": "Registro eliminado"
+  "recordDeleted": "Registro eliminado",
+  "syncErrorTitle": "Error de Sincronización",
+  "syncErrorMessage": "La sincronización de salud se ha detenido por falta de permisos. Por favor, actívalos en los ajustes del sistema.",
+  "close": "Cerrar",
+  "settings": "Ir a Ajustes"
 }

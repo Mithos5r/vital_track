@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:skeletonizer/skeletonizer.dart';
+import 'package:permission_handler/permission_handler.dart';
 import '../../core/constants/health_metrics_info.dart';
 import '../../data/firebase_auth/auth_repository_impl.dart';
 import '../../domain/health_metrics/dashboard_summary.dart';
+import '../../data/health_metrics/shared_prefs_data_source.dart';
 import '../../l10n/app_localizations.dart';
 import 'dashboard_notifier.dart';
 
@@ -52,10 +54,43 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> with SingleTi
     });
   }
 
+  void _showPermissionErrorDialog(AppLocalizations l10n) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.syncErrorTitle),
+        content: Text(l10n.syncErrorMessage),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(l10n.close),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              openAppSettings();
+              Navigator.pop(context);
+            },
+            child: Text(l10n.settings),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final metricsAsync = ref.watch(dashboardProvider);
+
+    // Watch sync status to show error dialog
+    ref.listen(sharedPrefsDataSourceProvider, (previous, next) {
+      next.whenData((prefs) {
+        if (prefs.isSyncStopped()) {
+          _showPermissionErrorDialog(l10n);
+        }
+      });
+    });
 
     return Scaffold(
       appBar: AppBar(
@@ -258,6 +293,7 @@ class _EmptyDashboard extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            // Placeholder SVG for empty state as per context.md
             const Icon(Icons.analytics_outlined, size: 100, color: Colors.grey),
             const SizedBox(height: 24),
             Text(

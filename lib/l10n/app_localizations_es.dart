@@ -105,4 +105,17 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get recordDeleted => 'Registro eliminado';
+
+  @override
+  String get syncErrorTitle => 'Error de Sincronización';
+
+  @override
+  String get syncErrorMessage =>
+      'La sincronización de salud se ha detenido por falta de permisos. Por favor, actívalos en los ajustes del sistema.';
+
+  @override
+  String get close => 'Cerrar';
+
+  @override
+  String get settings => 'Ir a Ajustes';
 }

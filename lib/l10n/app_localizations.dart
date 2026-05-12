@@ -285,6 +285,30 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Registro eliminado'**
   String get recordDeleted;
+
+  /// No description provided for @syncErrorTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Error de Sincronización'**
+  String get syncErrorTitle;
+
+  /// No description provided for @syncErrorMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'La sincronización de salud se ha detenido por falta de permisos. Por favor, actívalos en los ajustes del sistema.'**
+  String get syncErrorMessage;
+
+  /// No description provided for @close.
+  ///
+  /// In es, this message translates to:
+  /// **'Cerrar'**
+  String get close;
+
+  /// No description provided for @settings.
+  ///
+  /// In es, this message translates to:
+  /// **'Ir a Ajustes'**
+  String get settings;
 }
 
 class _AppLocalizationsDelegate
