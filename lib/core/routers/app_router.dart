@@ -1,44 +1,34 @@
+import 'dart:developer' as developer;
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../data/firebase_auth/auth_repository_impl.dart';
+import '../../../presentation/auth/login_screen.dart';
 
 part 'app_router.g.dart';
-
-// Helper to use Stream as Listenable for GoRouter
-class RouterListenable extends ChangeNotifier {
-  RouterListenable(Stream<dynamic> stream) {
-    notifyListeners();
-    _subscription = stream.listen((_) => notifyListeners());
-  }
-
-  late final dynamic _subscription;
-
-  @override
-  void dispose() {
-    _subscription.cancel();
-    super.dispose();
-  }
-}
 
 @riverpod
 GoRouter appRouter(Ref ref) {
   final authState = ref.watch(authStateChangesProvider);
   
   return GoRouter(
-    initialLocation: '/splash',
-    refreshListenable: RouterListenable(ref.watch(authStateChangesProvider.future).asStream()),
+    initialLocation: '/login', // Start at login
     redirect: (context, state) {
-      final isLoggedIn = authState.value != null;
-      final isLoggingIn = state.matchedLocation == '/login' || 
-                          state.matchedLocation == '/register' ||
-                          state.matchedLocation == '/splash';
+      final user = authState.value;
+      final isLoading = authState.isLoading;
+      
+      developer.log('Router Redirect: location=${state.matchedLocation}, isLoading=$isLoading, user=${user?.email}');
 
-      if (!isLoggedIn) {
-        return isLoggingIn ? null : '/login';
+      if (isLoading) return null;
+
+      final isLoggedIn = user != null;
+      final isAuthPath = state.matchedLocation == '/login' || state.matchedLocation == '/register';
+
+      if (!isLoggedIn && !isAuthPath) {
+        return '/login';
       }
 
-      if (isLoggingIn) {
+      if (isLoggedIn && isAuthPath) {
         return '/home';
       }
 
@@ -46,16 +36,8 @@ GoRouter appRouter(Ref ref) {
     },
     routes: [
       GoRoute(
-        path: '/splash',
-        builder: (context, state) => const Scaffold(
-          body: Center(child: CircularProgressIndicator()),
-        ),
-      ),
-      GoRoute(
         path: '/login',
-        builder: (context, state) => const Scaffold(
-          body: Center(child: Text('Login Screen')),
-        ),
+        builder: (context, state) => const LoginScreen(),
       ),
       GoRoute(
         path: '/register',

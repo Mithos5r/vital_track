@@ -78,6 +78,8 @@ flutter:
 flutter_gen:
   output: lib/core/constants/
   line_length: 80
+  integrations:
+    flutter_svg: true
 
 # Specific configurations for splash and icons as per context.md
 flutter_native_splash:
