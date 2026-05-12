@@ -146,6 +146,14 @@ class _DashboardContent extends StatelessWidget {
             color: Colors.teal.shade50,
             iconColor: Colors.teal,
           ),
+          _BentoTile(
+            title: l10n.exercise,
+            value: latest.exerciseType ?? '--',
+            unit: latest.exerciseDuration != null ? '${latest.exerciseDuration} min' : '',
+            icon: Icons.fitness_center,
+            color: Colors.purple.shade50,
+            iconColor: Colors.purple,
+          ),
         ],
       ),
     );
