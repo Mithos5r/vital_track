@@ -1,6 +1,6 @@
 name: vital_track
 description: "VitalTrack: Health & AI Assistant for daily biometric tracking."
-publish_to: 'none'
+publish_to: "none"
 
 version: 1.0.0+1
 
@@ -72,8 +72,6 @@ flutter:
 
   assets:
     - assets/
-    - assets/launcher_icon/
-    - assets/native_splash/
 
 flutter_gen:
   output: lib/core/constants/
