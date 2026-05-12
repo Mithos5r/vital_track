@@ -23,9 +23,9 @@ dependencies:
   flutter_riverpod: ^3.3.1
   riverpod_annotation: ^4.0.2
 
-  # Local Persistence (Drift)
+  # Local Persistence (Modern Drift setup)
   drift: ^2.31.0
-  sqlite3_flutter_libs: ^0.5.24
+  drift_flutter: ^0.2.8
   path_provider: ^2.1.5
   path: ^1.9.1
 
@@ -78,3 +78,16 @@ flutter_gen:
   line_length: 80
   integrations:
     flutter_svg: true
+
+# Specific configurations for splash and icons as per context.md
+flutter_native_splash:
+  color: "#4caf50"
+  image: assets/logo_splash.png
+  android_12:
+    image: assets/logo_splash.png
+    color: "#4caf50"
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/launcher_icon/icon.png"

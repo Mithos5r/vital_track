@@ -1,8 +1,5 @@
 import 'package:drift/drift.dart';
-import 'package:drift/native.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:path/path.dart' as p;
-import 'dart:io';
+import 'package:drift_flutter/drift_flutter.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'app_database.g.dart';
@@ -21,19 +18,11 @@ class HealthMetrics extends Table {
 
 @DriftDatabase(tables: [HealthMetrics])
 class AppDatabase extends _$AppDatabase {
-  AppDatabase() : super(_openConnection());
+  AppDatabase() : super(driftDatabase(name: 'vital_track'));
   AppDatabase.forTesting(super.executor);
 
   @override
   int get schemaVersion => 1;
-
-  static QueryExecutor _openConnection() {
-    return LazyDatabase(() async {
-      final dbFolder = await getApplicationDocumentsDirectory();
-      final file = File(p.join(dbFolder.path, 'vital_track.sqlite'));
-      return NativeDatabase(file);
-    });
-  }
 }
 
 @riverpod
