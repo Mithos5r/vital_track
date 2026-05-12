@@ -1,10 +1,10 @@
-import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../data/firebase_auth/auth_repository_impl.dart';
 import '../../../presentation/auth/login_screen.dart';
 import '../../../presentation/auth/register_screen.dart';
 import '../../../presentation/dashboard/dashboard_screen.dart';
+import '../../../presentation/health_metrics/add_entry_screen.dart';
 
 part 'app_router.g.dart';
 
@@ -48,9 +48,7 @@ GoRouter appRouter(Ref ref) {
       ),
       GoRoute(
         path: '/add-entry',
-        builder: (context, state) => const Scaffold(
-          body: Center(child: Text('Add Entry Screen')),
-        ),
+        builder: (context, state) => const AddEntryScreen(),
       ),
     ],
   );
