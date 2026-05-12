@@ -1,9 +1,9 @@
-import 'dart:developer' as developer;
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../data/firebase_auth/auth_repository_impl.dart';
 import '../../../presentation/auth/login_screen.dart';
+import '../../../presentation/auth/register_screen.dart';
 
 part 'app_router.g.dart';
 
@@ -12,12 +12,10 @@ GoRouter appRouter(Ref ref) {
   final authState = ref.watch(authStateChangesProvider);
   
   return GoRouter(
-    initialLocation: '/login', // Start at login
+    initialLocation: '/login',
     redirect: (context, state) {
       final user = authState.value;
       final isLoading = authState.isLoading;
-      
-      developer.log('Router Redirect: location=${state.matchedLocation}, isLoading=$isLoading, user=${user?.email}');
 
       if (isLoading) return null;
 
@@ -41,9 +39,7 @@ GoRouter appRouter(Ref ref) {
       ),
       GoRoute(
         path: '/register',
-        builder: (context, state) => const Scaffold(
-          body: Center(child: Text('Register Screen')),
-        ),
+        builder: (context, state) => const RegisterScreen(),
       ),
       GoRoute(
         path: '/home',
