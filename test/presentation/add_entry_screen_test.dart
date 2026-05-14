@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:vital_track/data/firebase_auth/auth_repository_impl.dart';
 import 'package:vital_track/data/health_metrics/health_repository_impl.dart';
@@ -36,7 +37,24 @@ void main() {
         authRepositoryProvider.overrideWithValue(mockAuthRepository),
         healthRepositoryProvider.overrideWithValue(mockHealthRepository),
       ],
-      child: const MaterialApp(
+      child: MaterialApp.router(
+        routerConfig: GoRouter(
+          routes: [
+            GoRoute(
+              path: '/',
+              builder: (context, state) => Scaffold(
+                body: ElevatedButton(
+                  onPressed: () => context.push('/add'),
+                  child: const Text('Go'),
+                ),
+              ),
+            ),
+            GoRoute(
+              path: '/add',
+              builder: (context, state) => const AddEntryScreen(),
+            ),
+          ],
+        ),
         localizationsDelegates: [
           AppLocalizations.delegate,
           GlobalMaterialLocalizations.delegate,
@@ -44,7 +62,6 @@ void main() {
           GlobalCupertinoLocalizations.delegate,
         ],
         supportedLocales: [Locale('es')],
-        home: AddEntryScreen(),
       ),
     );
   }
@@ -53,8 +70,10 @@ void main() {
     testWidgets('shows error SnackBar when saving a completely empty form', (tester) async {
       await tester.pumpWidget(createWidgetUnderTest());
       await tester.pumpAndSettle();
+      await tester.tap(find.text('Go'));
+      await tester.pumpAndSettle();
 
-      final button = find.byType(ElevatedButton);
+      final button = find.byType(ElevatedButton).last;
       await tester.ensureVisible(button);
       await tester.tap(button);
       await tester.pumpAndSettle();
@@ -65,6 +84,8 @@ void main() {
     testWidgets('validates co-dependency between exercise type and duration', (tester) async {
       await tester.pumpWidget(createWidgetUnderTest());
       await tester.pumpAndSettle();
+      await tester.tap(find.text('Go'));
+      await tester.pumpAndSettle();
 
       final durationField = find.ancestor(
         of: find.text('Duración (minutos)'),
@@ -73,7 +94,7 @@ void main() {
       await tester.ensureVisible(durationField);
       await tester.enterText(durationField, '30');
       
-      final button = find.byType(ElevatedButton);
+      final button = find.byType(ElevatedButton).last;
       await tester.ensureVisible(button);
       await tester.tap(button);
       await tester.pumpAndSettle();
@@ -89,18 +110,48 @@ void main() {
 
       await tester.pumpWidget(createWidgetUnderTest());
       await tester.pumpAndSettle();
+      await tester.tap(find.text('Go'));
+      await tester.pumpAndSettle();
 
       final hrField = find.byType(TextFormField).first;
       await tester.ensureVisible(hrField);
       await tester.enterText(hrField, '80');
       
-      final button = find.byType(ElevatedButton);
+      final button = find.byType(ElevatedButton).last;
       await tester.ensureVisible(button);
       
       // We don't tap the button here because context.pop() will fail in this simple setup
       // but the logic is verified by other tests. 
       // Instead, we verify the form's existence.
       expect(find.byType(Form), findsOneWidget);
+    });
+
+    testWidgets('saves sleep data correctly', (tester) async {
+      when(() => mockHealthRepository.saveHealthMetric(any()))
+          .thenAnswer((_) async => {});
+      when(() => mockHealthRepository.getHealthMetrics('123'))
+          .thenAnswer((_) async => []);
+
+      await tester.pumpWidget(createWidgetUnderTest());
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Go'));
+      await tester.pumpAndSettle();
+
+      final sleepField = find.ancestor(
+        of: find.byIcon(Icons.bedtime_outlined),
+        matching: find.byType(TextFormField),
+      );
+      await tester.ensureVisible(sleepField);
+      await tester.enterText(sleepField, '8'); // 8 hours
+      
+      final button = find.byType(ElevatedButton).last;
+      await tester.ensureVisible(button);
+      await tester.tap(button);
+      await tester.pumpAndSettle();
+
+      verify(() => mockHealthRepository.saveHealthMetric(any(that: predicate((HealthMetricEntity m) {
+        return m.sleep == 480; // 8 * 60
+      })))).called(1);
     });
   });
 }

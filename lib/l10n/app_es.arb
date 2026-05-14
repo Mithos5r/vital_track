@@ -26,6 +26,7 @@
   "steps": "Pasos",
   "calories": "Calorías",
   "exercise": "Ejercicio",
+  "sleep": "Sueño",
   "fieldRequired": "Campo requerido",
   "invalidEmail": "Email inválido",
   "passwordTooShort": "Mínimo 6 caracteres",

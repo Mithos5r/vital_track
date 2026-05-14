@@ -61,6 +61,7 @@ class SyncHealthUseCase {
     
     int totalSteps = 0;
     int totalCalories = 0;
+    int totalSleepMinutes = 0;
 
     for (final dp in dataPoints) {
       final value = dp.value;
@@ -80,13 +81,16 @@ class SyncHealthUseCase {
           case HealthDataType.ACTIVE_ENERGY_BURNED:
             totalCalories += value.numericValue.toInt();
             break;
+          case HealthDataType.SLEEP_ASLEEP:
+            totalSleepMinutes += value.numericValue.toInt();
+            break;
           default:
             break;
         }
       }
     }
 
-    if (hrCount > 0 || boCount > 0 || totalSteps > 0 || totalCalories > 0) {
+    if (hrCount > 0 || boCount > 0 || totalSteps > 0 || totalCalories > 0 || totalSleepMinutes > 0) {
       await _repository.saveHealthMetric(HealthMetricEntity(
         user: _userId,
         timestamp: end, // Use the end of the window as record time
@@ -94,6 +98,7 @@ class SyncHealthUseCase {
         bloodOxygen: boCount > 0 ? (boSum! / boCount) : null,
         steps: totalSteps > 0 ? totalSteps : null,
         caloriesBurned: totalCalories > 0 ? totalCalories : null,
+        sleep: totalSleepMinutes > 0 ? totalSleepMinutes : null,
       ));
     }
   }

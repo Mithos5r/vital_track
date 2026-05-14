@@ -106,6 +106,15 @@ class $HealthMetricsTable extends HealthMetrics
     type: DriftSqlType.int,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _sleepMeta = const VerificationMeta('sleep');
+  @override
+  late final GeneratedColumn<int> sleep = GeneratedColumn<int>(
+    'sleep',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -117,6 +126,7 @@ class $HealthMetricsTable extends HealthMetrics
     caloriesBurned,
     exerciseType,
     exerciseDuration,
+    sleep,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -197,6 +207,12 @@ class $HealthMetricsTable extends HealthMetrics
         ),
       );
     }
+    if (data.containsKey('sleep')) {
+      context.handle(
+        _sleepMeta,
+        sleep.isAcceptableOrUnknown(data['sleep']!, _sleepMeta),
+      );
+    }
     return context;
   }
 
@@ -242,6 +258,10 @@ class $HealthMetricsTable extends HealthMetrics
         DriftSqlType.int,
         data['${effectivePrefix}exercise_duration'],
       ),
+      sleep: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sleep'],
+      ),
     );
   }
 
@@ -261,6 +281,7 @@ class HealthMetric extends DataClass implements Insertable<HealthMetric> {
   final int? caloriesBurned;
   final String? exerciseType;
   final int? exerciseDuration;
+  final int? sleep;
   const HealthMetric({
     required this.id,
     required this.user,
@@ -271,6 +292,7 @@ class HealthMetric extends DataClass implements Insertable<HealthMetric> {
     this.caloriesBurned,
     this.exerciseType,
     this.exerciseDuration,
+    this.sleep,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -295,6 +317,9 @@ class HealthMetric extends DataClass implements Insertable<HealthMetric> {
     }
     if (!nullToAbsent || exerciseDuration != null) {
       map['exercise_duration'] = Variable<int>(exerciseDuration);
+    }
+    if (!nullToAbsent || sleep != null) {
+      map['sleep'] = Variable<int>(sleep);
     }
     return map;
   }
@@ -322,6 +347,9 @@ class HealthMetric extends DataClass implements Insertable<HealthMetric> {
       exerciseDuration: exerciseDuration == null && nullToAbsent
           ? const Value.absent()
           : Value(exerciseDuration),
+      sleep: sleep == null && nullToAbsent
+          ? const Value.absent()
+          : Value(sleep),
     );
   }
 
@@ -340,6 +368,7 @@ class HealthMetric extends DataClass implements Insertable<HealthMetric> {
       caloriesBurned: serializer.fromJson<int?>(json['caloriesBurned']),
       exerciseType: serializer.fromJson<String?>(json['exerciseType']),
       exerciseDuration: serializer.fromJson<int?>(json['exerciseDuration']),
+      sleep: serializer.fromJson<int?>(json['sleep']),
     );
   }
   @override
@@ -355,6 +384,7 @@ class HealthMetric extends DataClass implements Insertable<HealthMetric> {
       'caloriesBurned': serializer.toJson<int?>(caloriesBurned),
       'exerciseType': serializer.toJson<String?>(exerciseType),
       'exerciseDuration': serializer.toJson<int?>(exerciseDuration),
+      'sleep': serializer.toJson<int?>(sleep),
     };
   }
 
@@ -368,6 +398,7 @@ class HealthMetric extends DataClass implements Insertable<HealthMetric> {
     Value<int?> caloriesBurned = const Value.absent(),
     Value<String?> exerciseType = const Value.absent(),
     Value<int?> exerciseDuration = const Value.absent(),
+    Value<int?> sleep = const Value.absent(),
   }) => HealthMetric(
     id: id ?? this.id,
     user: user ?? this.user,
@@ -382,6 +413,7 @@ class HealthMetric extends DataClass implements Insertable<HealthMetric> {
     exerciseDuration: exerciseDuration.present
         ? exerciseDuration.value
         : this.exerciseDuration,
+    sleep: sleep.present ? sleep.value : this.sleep,
   );
   HealthMetric copyWithCompanion(HealthMetricsCompanion data) {
     return HealthMetric(
@@ -402,6 +434,7 @@ class HealthMetric extends DataClass implements Insertable<HealthMetric> {
       exerciseDuration: data.exerciseDuration.present
           ? data.exerciseDuration.value
           : this.exerciseDuration,
+      sleep: data.sleep.present ? data.sleep.value : this.sleep,
     );
   }
 
@@ -416,7 +449,8 @@ class HealthMetric extends DataClass implements Insertable<HealthMetric> {
           ..write('steps: $steps, ')
           ..write('caloriesBurned: $caloriesBurned, ')
           ..write('exerciseType: $exerciseType, ')
-          ..write('exerciseDuration: $exerciseDuration')
+          ..write('exerciseDuration: $exerciseDuration, ')
+          ..write('sleep: $sleep')
           ..write(')'))
         .toString();
   }
@@ -432,6 +466,7 @@ class HealthMetric extends DataClass implements Insertable<HealthMetric> {
     caloriesBurned,
     exerciseType,
     exerciseDuration,
+    sleep,
   );
   @override
   bool operator ==(Object other) =>
@@ -445,7 +480,8 @@ class HealthMetric extends DataClass implements Insertable<HealthMetric> {
           other.steps == this.steps &&
           other.caloriesBurned == this.caloriesBurned &&
           other.exerciseType == this.exerciseType &&
-          other.exerciseDuration == this.exerciseDuration);
+          other.exerciseDuration == this.exerciseDuration &&
+          other.sleep == this.sleep);
 }
 
 class HealthMetricsCompanion extends UpdateCompanion<HealthMetric> {
@@ -458,6 +494,7 @@ class HealthMetricsCompanion extends UpdateCompanion<HealthMetric> {
   final Value<int?> caloriesBurned;
   final Value<String?> exerciseType;
   final Value<int?> exerciseDuration;
+  final Value<int?> sleep;
   const HealthMetricsCompanion({
     this.id = const Value.absent(),
     this.user = const Value.absent(),
@@ -468,6 +505,7 @@ class HealthMetricsCompanion extends UpdateCompanion<HealthMetric> {
     this.caloriesBurned = const Value.absent(),
     this.exerciseType = const Value.absent(),
     this.exerciseDuration = const Value.absent(),
+    this.sleep = const Value.absent(),
   });
   HealthMetricsCompanion.insert({
     this.id = const Value.absent(),
@@ -479,6 +517,7 @@ class HealthMetricsCompanion extends UpdateCompanion<HealthMetric> {
     this.caloriesBurned = const Value.absent(),
     this.exerciseType = const Value.absent(),
     this.exerciseDuration = const Value.absent(),
+    this.sleep = const Value.absent(),
   }) : user = Value(user),
        timestamp = Value(timestamp);
   static Insertable<HealthMetric> custom({
@@ -491,6 +530,7 @@ class HealthMetricsCompanion extends UpdateCompanion<HealthMetric> {
     Expression<int>? caloriesBurned,
     Expression<String>? exerciseType,
     Expression<int>? exerciseDuration,
+    Expression<int>? sleep,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -502,6 +542,7 @@ class HealthMetricsCompanion extends UpdateCompanion<HealthMetric> {
       if (caloriesBurned != null) 'calories_burned': caloriesBurned,
       if (exerciseType != null) 'exercise_type': exerciseType,
       if (exerciseDuration != null) 'exercise_duration': exerciseDuration,
+      if (sleep != null) 'sleep': sleep,
     });
   }
 
@@ -515,6 +556,7 @@ class HealthMetricsCompanion extends UpdateCompanion<HealthMetric> {
     Value<int?>? caloriesBurned,
     Value<String?>? exerciseType,
     Value<int?>? exerciseDuration,
+    Value<int?>? sleep,
   }) {
     return HealthMetricsCompanion(
       id: id ?? this.id,
@@ -526,6 +568,7 @@ class HealthMetricsCompanion extends UpdateCompanion<HealthMetric> {
       caloriesBurned: caloriesBurned ?? this.caloriesBurned,
       exerciseType: exerciseType ?? this.exerciseType,
       exerciseDuration: exerciseDuration ?? this.exerciseDuration,
+      sleep: sleep ?? this.sleep,
     );
   }
 
@@ -559,6 +602,9 @@ class HealthMetricsCompanion extends UpdateCompanion<HealthMetric> {
     if (exerciseDuration.present) {
       map['exercise_duration'] = Variable<int>(exerciseDuration.value);
     }
+    if (sleep.present) {
+      map['sleep'] = Variable<int>(sleep.value);
+    }
     return map;
   }
 
@@ -573,7 +619,8 @@ class HealthMetricsCompanion extends UpdateCompanion<HealthMetric> {
           ..write('steps: $steps, ')
           ..write('caloriesBurned: $caloriesBurned, ')
           ..write('exerciseType: $exerciseType, ')
-          ..write('exerciseDuration: $exerciseDuration')
+          ..write('exerciseDuration: $exerciseDuration, ')
+          ..write('sleep: $sleep')
           ..write(')'))
         .toString();
   }
@@ -601,6 +648,7 @@ typedef $$HealthMetricsTableCreateCompanionBuilder =
       Value<int?> caloriesBurned,
       Value<String?> exerciseType,
       Value<int?> exerciseDuration,
+      Value<int?> sleep,
     });
 typedef $$HealthMetricsTableUpdateCompanionBuilder =
     HealthMetricsCompanion Function({
@@ -613,6 +661,7 @@ typedef $$HealthMetricsTableUpdateCompanionBuilder =
       Value<int?> caloriesBurned,
       Value<String?> exerciseType,
       Value<int?> exerciseDuration,
+      Value<int?> sleep,
     });
 
 class $$HealthMetricsTableFilterComposer
@@ -666,6 +715,11 @@ class $$HealthMetricsTableFilterComposer
 
   ColumnFilters<int> get exerciseDuration => $composableBuilder(
     column: $table.exerciseDuration,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sleep => $composableBuilder(
+    column: $table.sleep,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -723,6 +777,11 @@ class $$HealthMetricsTableOrderingComposer
     column: $table.exerciseDuration,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<int> get sleep => $composableBuilder(
+    column: $table.sleep,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$HealthMetricsTableAnnotationComposer
@@ -768,6 +827,9 @@ class $$HealthMetricsTableAnnotationComposer
     column: $table.exerciseDuration,
     builder: (column) => column,
   );
+
+  GeneratedColumn<int> get sleep =>
+      $composableBuilder(column: $table.sleep, builder: (column) => column);
 }
 
 class $$HealthMetricsTableTableManager
@@ -810,6 +872,7 @@ class $$HealthMetricsTableTableManager
                 Value<int?> caloriesBurned = const Value.absent(),
                 Value<String?> exerciseType = const Value.absent(),
                 Value<int?> exerciseDuration = const Value.absent(),
+                Value<int?> sleep = const Value.absent(),
               }) => HealthMetricsCompanion(
                 id: id,
                 user: user,
@@ -820,6 +883,7 @@ class $$HealthMetricsTableTableManager
                 caloriesBurned: caloriesBurned,
                 exerciseType: exerciseType,
                 exerciseDuration: exerciseDuration,
+                sleep: sleep,
               ),
           createCompanionCallback:
               ({
@@ -832,6 +896,7 @@ class $$HealthMetricsTableTableManager
                 Value<int?> caloriesBurned = const Value.absent(),
                 Value<String?> exerciseType = const Value.absent(),
                 Value<int?> exerciseDuration = const Value.absent(),
+                Value<int?> sleep = const Value.absent(),
               }) => HealthMetricsCompanion.insert(
                 id: id,
                 user: user,
@@ -842,6 +907,7 @@ class $$HealthMetricsTableTableManager
                 caloriesBurned: caloriesBurned,
                 exerciseType: exerciseType,
                 exerciseDuration: exerciseDuration,
+                sleep: sleep,
               ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
