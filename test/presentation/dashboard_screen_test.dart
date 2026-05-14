@@ -75,13 +75,14 @@ void main() {
           timestamp: now.subtract(const Duration(days: 1)),
           steps: 10000,
           caloriesBurned: 500,
+          sleep: 450, // 7.5 hours
         ),
       ];
 
       when(() => mockHealthRepository.watchHealthMetrics('123'))
           .thenAnswer((_) => Stream.value(metrics));
 
-      await tester.binding.setSurfaceSize(const Size(800, 1200));
+      await tester.binding.setSurfaceSize(const Size(800, 2000));
       await tester.pumpWidget(createWidgetUnderTest());
       await tester.pumpAndSettle();
 
@@ -91,6 +92,10 @@ void main() {
       expect(find.text('30'), findsOneWidget);
       expect(find.text('min'), findsOneWidget);
       expect(find.text('Running'), findsOneWidget);
+      
+      // Verification of Sleep metric (7.5h for 450 min)
+      expect(find.text('7.5'), findsOneWidget);
+      expect(find.text('h'), findsOneWidget);
 
       await tester.binding.setSurfaceSize(null);
     });

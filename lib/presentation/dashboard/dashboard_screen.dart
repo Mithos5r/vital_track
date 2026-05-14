@@ -175,6 +175,11 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> with SingleTi
                       value: summary.bloodOxygen != null ? '${summary.bloodOxygen}' : '--',
                       l10n: l10n,
                     ),
+                    _MetricTile(
+                      info: const SleepInfo(),
+                      value: summary.sleep != null ? (summary.sleep! / 60).toStringAsFixed(1) : '--',
+                      l10n: l10n,
+                    ),
                   ],
                 ),
               ),

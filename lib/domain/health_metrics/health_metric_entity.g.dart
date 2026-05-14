@@ -17,6 +17,7 @@ HealthMetricEntity _$HealthMetricEntityFromJson(Map<String, dynamic> json) =>
       caloriesBurned: (json['calories_burned'] as num?)?.toInt(),
       exerciseType: json['exercise_type'] as String?,
       exerciseDuration: (json['exercise_duration'] as num?)?.toInt(),
+      sleep: (json['sleep'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$HealthMetricEntityToJson(HealthMetricEntity instance) =>
@@ -30,4 +31,5 @@ Map<String, dynamic> _$HealthMetricEntityToJson(HealthMetricEntity instance) =>
       'calories_burned': instance.caloriesBurned,
       'exercise_type': instance.exerciseType,
       'exercise_duration': instance.exerciseDuration,
+      'sleep': instance.sleep,
     };

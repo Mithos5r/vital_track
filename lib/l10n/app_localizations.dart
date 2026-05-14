@@ -208,6 +208,12 @@ abstract class AppLocalizations {
   /// **'Ejercicio'**
   String get exercise;
 
+  /// No description provided for @sleep.
+  ///
+  /// In es, this message translates to:
+  /// **'Sueño'**
+  String get sleep;
+
   /// No description provided for @fieldRequired.
   ///
   /// In es, this message translates to:

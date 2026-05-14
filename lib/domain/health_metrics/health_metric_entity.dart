@@ -15,6 +15,7 @@ class HealthMetricEntity {
   final int? caloriesBurned;
   final String? exerciseType;
   final int? exerciseDuration;
+  final int? sleep;
 
   const HealthMetricEntity({
     this.id,
@@ -26,6 +27,7 @@ class HealthMetricEntity {
     this.caloriesBurned,
     this.exerciseType,
     this.exerciseDuration,
+    this.sleep,
   });
 
   HealthMetricEntity copyWith({
@@ -38,6 +40,7 @@ class HealthMetricEntity {
     int? caloriesBurned,
     String? exerciseType,
     int? exerciseDuration,
+    int? sleep,
   }) {
     return HealthMetricEntity(
       id: id ?? this.id,
@@ -49,6 +52,7 @@ class HealthMetricEntity {
       caloriesBurned: caloriesBurned ?? this.caloriesBurned,
       exerciseType: exerciseType ?? this.exerciseType,
       exerciseDuration: exerciseDuration ?? this.exerciseDuration,
+      sleep: sleep ?? this.sleep,
     );
   }
 

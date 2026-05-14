@@ -20,6 +20,7 @@ class _AddEntryScreenState extends ConsumerState<AddEntryScreen> {
   final _bloodOxygenController = TextEditingController();
   final _stepsController = TextEditingController();
   final _caloriesController = TextEditingController();
+  final _sleepController = TextEditingController();
   final _exerciseTypeController = TextEditingController();
   final _exerciseDurationController = TextEditingController();
 
@@ -29,6 +30,7 @@ class _AddEntryScreenState extends ConsumerState<AddEntryScreen> {
     _bloodOxygenController.dispose();
     _stepsController.dispose();
     _caloriesController.dispose();
+    _sleepController.dispose();
     _exerciseTypeController.dispose();
     _exerciseDurationController.dispose();
     super.dispose();
@@ -41,11 +43,12 @@ class _AddEntryScreenState extends ConsumerState<AddEntryScreen> {
     final bo = double.tryParse(_bloodOxygenController.text);
     final st = int.tryParse(_stepsController.text);
     final cal = int.tryParse(_caloriesController.text);
+    final slHours = double.tryParse(_sleepController.text);
     final exType = _exerciseTypeController.text.trim();
     final exDur = int.tryParse(_exerciseDurationController.text);
 
     // Context.md requirement: Cannot save a completely empty form
-    if (hr == null && bo == null && st == null && cal == null && exType.isEmpty && exDur == null) {
+    if (hr == null && bo == null && st == null && cal == null && exType.isEmpty && exDur == null && slHours == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(l10n.errorAtLeastOneField)),
       );
@@ -62,6 +65,7 @@ class _AddEntryScreenState extends ConsumerState<AddEntryScreen> {
       bloodOxygen: bo,
       steps: st,
       caloriesBurned: cal,
+      sleep: slHours != null ? (slHours * 60).round() : null,
       exerciseType: exType.isEmpty ? null : exType,
       exerciseDuration: exDur,
     );
@@ -122,6 +126,14 @@ class _AddEntryScreenState extends ConsumerState<AddEntryScreen> {
                   controller: _caloriesController,
                   label: l10n.calories,
                   icon: Icons.local_fire_department_outlined,
+                  l10n: l10n,
+                ),
+                const SizedBox(height: 16),
+                _buildNumericField(
+                  controller: _sleepController,
+                  label: l10n.sleep,
+                  icon: Icons.bedtime_outlined,
+                  isDecimal: true,
                   l10n: l10n,
                 ),
                 const SizedBox(height: 24),

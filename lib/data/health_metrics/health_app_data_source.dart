@@ -11,6 +11,7 @@ class HealthAppDataSource {
     HealthDataType.STEPS,
     HealthDataType.BLOOD_OXYGEN,
     HealthDataType.ACTIVE_ENERGY_BURNED,
+    HealthDataType.SLEEP_ASLEEP,
   ];
 
   Future<bool> requestPermissions() async {

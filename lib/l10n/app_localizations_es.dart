@@ -68,6 +68,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get exercise => 'Ejercicio';
 
   @override
+  String get sleep => 'Sueño';
+
+  @override
   String get fieldRequired => 'Campo requerido';
 
   @override

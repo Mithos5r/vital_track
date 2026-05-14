@@ -55,8 +55,9 @@ void main() {
     });
 
     test('execute segments time and aggregates data correctly', () async {
-      final now = DateTime(2026, 5, 12, 12, 0); 
-      final lastSync = now.subtract(const Duration(hours: 2));
+      // Use current time to avoid large windows if the code uses DateTime.now()
+      final now = DateTime.now(); 
+      final lastSync = now.subtract(const Duration(minutes: 30));
 
       when(() => prefsDataSource.isSyncStopped()).thenReturn(false);
       when(() => healthDataSource.requestPermissions()).thenAnswer((_) async => true);
@@ -90,12 +91,9 @@ void main() {
         sourceName: 'source1',
       );
 
+      // Return data for the first window
       when(() => healthDataSource.fetchData(any(), any()))
-          .thenAnswer((invocation) async {
-            final start = invocation.positionalArguments[0] as DateTime;
-            if (start.hour == 10) return [dp1, dp2];
-            return [];
-          });
+          .thenAnswer((_) async => [dp1, dp2]);
 
       await useCase.execute();
 

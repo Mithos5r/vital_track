@@ -7,6 +7,7 @@ class DashboardSummary {
   final int? caloriesBurned;
   final String? exerciseType;
   final int? exerciseDuration;
+  final int? sleep;
 
   const DashboardSummary({
     this.heartRate,
@@ -15,6 +16,7 @@ class DashboardSummary {
     this.caloriesBurned,
     this.exerciseType,
     this.exerciseDuration,
+    this.sleep,
   });
 
   factory DashboardSummary.fromHistory(List<HealthMetricEntity> history) {
@@ -26,6 +28,7 @@ class DashboardSummary {
     int? cal;
     String? exType;
     int? exDur;
+    int? sl;
 
     // History is assumed to be sorted by timestamp DESC
     for (final record in history) {
@@ -33,6 +36,7 @@ class DashboardSummary {
       bo ??= record.bloodOxygen;
       st ??= record.steps;
       cal ??= record.caloriesBurned;
+      sl ??= record.sleep;
       
       // Exercise is treated as a pair (or at least duration)
       if (exDur == null && record.exerciseDuration != null) {
@@ -41,7 +45,7 @@ class DashboardSummary {
       }
       
       // Break early if we have all metrics
-      if (hr != null && bo != null && st != null && cal != null && exDur != null) {
+      if (hr != null && bo != null && st != null && cal != null && exDur != null && sl != null) {
         break;
       }
     }
@@ -53,6 +57,7 @@ class DashboardSummary {
       caloriesBurned: cal,
       exerciseType: exType,
       exerciseDuration: exDur,
+      sleep: sl,
     );
   }
 }

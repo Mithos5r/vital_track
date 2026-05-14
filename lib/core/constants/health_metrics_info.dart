@@ -23,6 +23,7 @@ sealed class HealthMetricInfo {
         const CaloriesInfo(),
         const BloodOxygenInfo(),
         const ExerciseInfo(),
+        const SleepInfo(),
       ];
 
   static HealthMetricInfo fromId(String id) {
@@ -111,4 +112,20 @@ class ExerciseInfo extends HealthMetricInfo {
 
   @override
   String getUnit(AppLocalizations l10n) => 'min';
+}
+
+class SleepInfo extends HealthMetricInfo {
+  const SleepInfo()
+      : super(
+          id: 'sleep',
+          icon: Icons.bedtime,
+          iconColor: const Color(0xFF1A237E), // Dark Blue
+          backgroundColor: const Color(0xFFE8EAF6), // Indigo 50
+        );
+
+  @override
+  String getTitle(AppLocalizations l10n) => l10n.sleep;
+
+  @override
+  String getUnit(AppLocalizations l10n) => 'h';
 }

@@ -14,6 +14,7 @@ class HealthMetrics extends Table {
   IntColumn get caloriesBurned => integer().nullable()();
   TextColumn get exerciseType => text().nullable()();
   IntColumn get exerciseDuration => integer().nullable()();
+  IntColumn get sleep => integer().nullable()();
 }
 
 @DriftDatabase(tables: [HealthMetrics])
